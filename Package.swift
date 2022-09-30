@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Illuminate",
     platforms: [
-        .iOS(.v11)
+        .iOS(.v13)
     ],
     products: [
         .library(name: "IlluminateAuth", targets: ["IlluminateAuth"]),
