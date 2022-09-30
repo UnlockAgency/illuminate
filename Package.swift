@@ -4,19 +4,18 @@
 import PackageDescription
 
 let package = Package(
-    name: "Auth",
+    name: "Illuminate",
     platforms: [
         .iOS(.v11)
     ],
     products: [
-        .library(name: "Auth", targets: ["Auth"]),
+        .library(name: "IlluminateAuth", targets: ["IlluminateAuth"]),
     ],
     dependencies: [
         // .package(url: /* package url */, from: "1.0.0"),
     ],
     targets: [
-        .target(name: "Auth", dependencies: []),
-        .testTarget(name: "AuthTests", dependencies: ["Auth"]),
+        .target(name: "IlluminateAuth", dependencies: [], path: "Sources/Auth"),
     ],
     swiftLanguageVersions: [ .v5 ]
 )
