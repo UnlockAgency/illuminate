@@ -22,6 +22,10 @@ open class RoutingManager: RoutingService {
     
     private let subject = PassthroughSubject<RouteType, Never>()
     
+    public init() {
+        
+    }
+    
     public func publisher<T: Route>(for type: T.Type) -> AnyPublisher<T.ValueType, Never> {
         return subject
             .share()
