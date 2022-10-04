@@ -16,14 +16,18 @@ open class RoutingManager: RoutingService {
     
     private var allRouteTypes: [RouteType.Type] = []
     
-    public func registerRoutes(_ routeTypes: [RouteType.Type]) {
-        allRouteTypes.append(contentsOf: routeTypes)
-    }
-    
     private let subject = PassthroughSubject<RouteType, Never>()
     
     public init() {
         
+    }
+    
+    public func registerRoutes(_ routeTypes: [RouteType.Type]) {
+        allRouteTypes.append(contentsOf: routeTypes)
+    }
+    
+    public func registerRoutes(_ routeTypes: RouteType.Type...) {
+        allRouteTypes.append(contentsOf: routeTypes)
     }
     
     public func publisher<T: Route>(for type: T.Type) -> AnyPublisher<T.ValueType, Never> {
