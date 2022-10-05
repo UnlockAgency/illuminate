@@ -1,3 +1,0 @@
-# Coordination
-
-Coordinators and stuff...

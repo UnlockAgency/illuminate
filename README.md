@@ -1,11 +1,10 @@
 # Illuminate
 
 ## Auth
-
-A description of this package.
+- [Read instructions](sources/Auth/README.md)
 
 ## Routing
-- [Read instructions](docs/ROUTING.md)
+- [Read instructions](sources/Routing/README.md)
 
 ## Coordination
-- [Read instructions](docs/COORDINATION.md)
+- [Read instructions](sources/Coordination/README.md)
