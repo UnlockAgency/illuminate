@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "dysprosium",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/e-sites/Dysprosium.git",
+      "state" : {
+        "revision" : "f924ff3e0c5c3b5c6577916216155156bb7a950e",
+        "version" : "6.1.0"
+      }
+    },
+    {
+      "identity" : "lithium",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/e-sites/lithium.git",
+      "state" : {
+        "revision" : "0ebe10fb24251fdc6ef2b4efcd4f8fd137de1323",
+        "version" : "9.0.5"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "6fe203dc33195667ce1759bf0182975e4653ba1c",
+        "version" : "1.4.4"
+      }
+    }
+  ],
+  "version" : 2
+}
