@@ -14,7 +14,7 @@ protocol RouteType {
 extension RouteType {
     static func getPath(from url: URL) -> String? {
         if let scheme = url.scheme, let host = url.host {
-            if scheme == Natrium.Config.scheme || scheme == Bundle.main.bundleIdentifier {
+            if scheme.contains("http") || scheme == Bundle.main.bundleIdentifier {
                 return "/\(host)\(url.relativePath)"
             }
         }
