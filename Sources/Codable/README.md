@@ -1,5 +1,16 @@
 # Codable
 
+## UnknownableEnum
+
+```swift
+enum ProductCategory: String, UnknownableEnum {
+    case electronics
+    case music
+    case gaming
+    case unknown
+}
+
+```
 
 ## DefaultCodable propertyWrapper
 

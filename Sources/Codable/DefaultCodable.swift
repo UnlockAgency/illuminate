@@ -109,11 +109,11 @@ public struct DefaultCodable<Strategy: DefaultCodableStrategy>: Codable, CustomD
     }
 
     public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
         do {
+            let container = try decoder.singleValueContainer()
             self.wrappedValue = try container.decode(Strategy.RawValue.self)
         } catch {
-           self.wrappedValue = Strategy.defaultValue
+            self.wrappedValue = Strategy.defaultValue
         }
     }
 
@@ -126,10 +126,7 @@ public struct DefaultCodable<Strategy: DefaultCodableStrategy>: Codable, CustomD
     }
 }
 
-extension DefaultCodable: Equatable where Strategy.RawValue: Equatable { }
-extension DefaultCodable: Hashable where Strategy.RawValue: Hashable { }
-
-public extension KeyedDecodingContainer {
+extension KeyedDecodingContainer {
     func decode<P>(_: DefaultCodable<P>.Type, forKey key: Key) throws -> DefaultCodable<P> {
         if let value = try decodeIfPresent(DefaultCodable<P>.self, forKey: key) {
             return value
@@ -138,6 +135,15 @@ public extension KeyedDecodingContainer {
         }
     }
 }
+
+extension KeyedEncodingContainer {
+    mutating func encode<P>(_ value: DefaultCodable<P>, forKey key: Key) throws {
+        try encode(value.wrappedValue, forKey: key)
+    }
+}
+
+extension DefaultCodable: Equatable where Strategy.RawValue: Equatable { }
+extension DefaultCodable: Hashable where Strategy.RawValue: Hashable { }
 
 public protocol Numeric { }
 extension Int: Numeric { }
