@@ -1,10 +1,10 @@
 # Illuminate
 
 ## Auth
-- [Read instructions](sources/Auth/README.md)
+- [Read instructions](Sources/Auth/README.md)
 
 ## Routing
-- [Read instructions](sources/Routing/README.md)
+- [Read instructions](Sources/Routing/README.md)
 
 ## Coordination
-- [Read instructions](sources/Coordination/README.md)
+- [Read instructions](Sources/Coordination/README.md)
