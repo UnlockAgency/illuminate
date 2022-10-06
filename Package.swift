@@ -10,6 +10,7 @@ let package = Package(
     ],
     products: [
         .library(name: "IlluminateAuth", targets: ["IlluminateAuth"]),
+        .library(name: "IlluminateCache", targets: ["IlluminateCache"]),
         .library(name: "IlluminateRouting", targets: ["IlluminateRouting"]),
         .library(name: "IlluminateSecurity", targets: ["IlluminateSecurity"]),
         .library(name: "IlluminateCoordination", targets: ["IlluminateCoordination"]),
@@ -21,6 +22,7 @@ let package = Package(
     ],
     targets: [
         .target(name: "IlluminateAuth", dependencies: [], path: "Sources/Auth"),
+        .target(name: "IlluminateCache", dependencies: [], path: "Sources/Cache"),
         .target(name: "IlluminateRouting", dependencies: [], path: "Sources/Routing"),
         .target(name: "IlluminateSecurity", dependencies: [], path: "Sources/Security"),
         .target(name: "IlluminateCoordination", dependencies: [ "Dysprosium" ], path: "Sources/Coordination"),

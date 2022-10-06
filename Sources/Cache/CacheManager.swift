@@ -11,7 +11,7 @@ public class CacheManager {
     
     private let memoryCache = NSCache<AnyObject, AnyObject>()
     
-    init() {
+    public init() {
         
     }
 }
