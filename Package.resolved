@@ -1,0 +1,59 @@
+{
+  "pins" : [
+    {
+      "identity" : "cwlcatchexception",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattgallagher/CwlCatchException.git",
+      "state" : {
+        "revision" : "35f9e770f54ce62dd8526470f14c6e137cef3eea",
+        "version" : "2.1.1"
+      }
+    },
+    {
+      "identity" : "cwlpreconditiontesting",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattgallagher/CwlPreconditionTesting.git",
+      "state" : {
+        "revision" : "c21f7bab5ca8eee0a9998bbd17ca1d0eb45d4688",
+        "version" : "2.1.0"
+      }
+    },
+    {
+      "identity" : "dysprosium",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/e-sites/Dysprosium.git",
+      "state" : {
+        "revision" : "f924ff3e0c5c3b5c6577916216155156bb7a950e",
+        "version" : "6.1.0"
+      }
+    },
+    {
+      "identity" : "lithium",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/e-sites/lithium.git",
+      "state" : {
+        "revision" : "0ebe10fb24251fdc6ef2b4efcd4f8fd137de1323",
+        "version" : "9.0.5"
+      }
+    },
+    {
+      "identity" : "nimble",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Quick/Nimble.git",
+      "state" : {
+        "revision" : "1f3bde57bde12f5e7b07909848c071e9b73d6edc",
+        "version" : "10.0.0"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "6fe203dc33195667ce1759bf0182975e4653ba1c",
+        "version" : "1.4.4"
+      }
+    }
+  ],
+  "version" : 2
+}

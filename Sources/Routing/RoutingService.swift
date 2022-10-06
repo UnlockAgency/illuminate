@@ -6,13 +6,17 @@
 //
 
 import Foundation
+#if canImport(UIKit)
 import UIKit
+#endif
 import UserNotifications
 import Combine
 
-protocol RoutingService: AnyObject {
+public protocol RoutingService: AnyObject {
     func handle(url: URL) -> Bool
+#if canImport(UIKit)
     func handle(launchOptions: [UIApplication.LaunchOptionsKey: Any]?)
+#endif
     func handleNotification(response: UNNotificationResponse)
     
     /// Listen for route events

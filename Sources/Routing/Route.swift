@@ -7,14 +7,14 @@
 
 import Foundation
 
-protocol RouteType {
+public protocol RouteType {
     static func handle(url: URL) -> RouteType?
 }
 
-extension RouteType {
+public extension RouteType {
     static func getPath(from url: URL) -> String? {
         if let scheme = url.scheme, let host = url.host {
-            if scheme.contains("http") || scheme == Bundle.main.bundleIdentifier {
+            if !scheme.hasPrefix("http") {
                 return "/\(host)\(url.relativePath)"
             }
         }
@@ -22,7 +22,7 @@ extension RouteType {
     }
 }
 
-protocol Route: RouteType {
+public protocol Route: RouteType {
     associatedtype ValueType
     
     var value: ValueType { get }
