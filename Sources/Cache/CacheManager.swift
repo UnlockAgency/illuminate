@@ -5,6 +5,10 @@
 //  Created by Thomas Roovers on 03/10/2022.
 //
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 public class CacheManager {
     
     public static let instance = CacheManager()
@@ -66,7 +70,7 @@ extension CacheManager {
     // MARK: - Read & write UIImage
     // ------------------------------
     
-    public func write(image: UIImage, forKey key: String, format: ImageFormat? = nil) {
+    public func write(image: UIImage, forKey key: String, format: ImageType? = nil) {
         var data: Data? = nil
         
         if let format = format, format == .png {
@@ -95,13 +99,31 @@ extension CacheManager {
     // ------------------------------
     
     /// Write a string for key
-    public func write(string: String, forKey key: String) {
-        write(object: string as NSCoding, forKey: key)
+    public func write(string: String, forKey key: String) throws {
+        try write(object: string as NSCoding, forKey: key)
     }
     
     /// Read a string for key
     public func readString(forKey key: String) -> String? {
         return readObject(forKey: key) as? String
+    }
+    
+    // MARK: - Read & write NSCoding
+    // ------------------------------
+
+    public func write(object: NSCoding, forKey key: String) throws {
+        let data = try NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: true)
+        write(data: data, forKey: key)
+    }
+    
+    public func readObject(forKey key: String) -> NSObject? {
+        let data = readData(forKey: key)
+        
+        if let data = data {
+            return NSKeyedUnarchiver.unarchiveObject(with: data) as? NSObject
+        }
+        
+        return nil
     }
 }
 
