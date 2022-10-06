@@ -12,6 +12,7 @@ let package = Package(
         .library(name: "IlluminateAuth", targets: ["IlluminateAuth"]),
         .library(name: "IlluminateRouting", targets: ["IlluminateRouting"]),
         .library(name: "IlluminateCoordination", targets: ["IlluminateCoordination"]),
+        .library(name: "IlluminateCodable", targets: ["IlluminateCodable"]),
     ],
     dependencies: [
         .package(url: "https://github.com/e-sites/Dysprosium.git", .upToNextMajor(from: "6.1.0")),
@@ -20,6 +21,7 @@ let package = Package(
         .target(name: "IlluminateAuth", dependencies: [], path: "Sources/Auth"),
         .target(name: "IlluminateRouting", dependencies: [], path: "Sources/Routing"),
         .target(name: "IlluminateCoordination", dependencies: [ "Dysprosium" ], path: "Sources/Coordination"),
+        .target(name: "IlluminateCodable", dependencies: [ ], path: "Sources/Codable"),
     ],
     swiftLanguageVersions: [ .v5 ]
 )
