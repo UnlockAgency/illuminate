@@ -73,20 +73,24 @@ public class SecurityManager {
             on: .main,
             in: .common
         )
-            .autoconnect()
-            .prefix(1)
-            .sink { [weak self] _ in
-                log("Security lockscreen timeout fired, user needs to revalidate lockscreen pincode / biometrics")
-                
-                self?.reCancellable?.cancel()
-                self?.reCancellable = nil
-                SecurityManager.hasSuccessfullyUnlockedInSession = false
-            }
+        .autoconnect()
+        .prefix(1)
+        .sink { [weak self] _ in
+            log("Security lockscreen timeout fired, user needs to revalidate lockscreen pincode / biometrics")
+            
+            self?.reCancellable?.cancel()
+            self?.reCancellable = nil
+            SecurityManager.hasSuccessfullyUnlockedInSession = false
+        }
     }
     
     public func reset() {
         provider.setSecurityType(nil)
         provider.didSetPinCode(nil)
+    }
+    
+    public func isValid(securityCode code: String) -> Bool {
+        return code == provider.getPinCode()
     }
     
     public func present(in viewController: UIViewController) -> AnyPublisher<Bool, Never> {
@@ -113,14 +117,19 @@ public class SecurityManager {
                     return success
                 }
                 .eraseToAnyPublisher()
-
+            
         case .code:
             return presentSecurityCodeView(in: viewController)
         default:
             return Just(false).eraseToAnyPublisher()
         }
     }
-    
+}
+
+// MARK: Security code authentication
+// -----------------------------------
+
+extension SecurityManager {
     private func presentSecurityCodeView(in viewController: UIViewController) -> AnyPublisher<Bool, Never> {
         guard let authenticationDelegate else {
             log("Not presenting authentication code verification, no `authenticationDelegate` set")
@@ -133,7 +142,7 @@ public class SecurityManager {
             .flatMap { [weak self] result in
                 Future<Bool?, Never> { promise in
                     authenticationDelegate.dismissSecurityCodeView(withResult: result)
-
+                    
                     switch result {
                     case .successful:
                         self?.restartTimer()
@@ -149,7 +158,13 @@ public class SecurityManager {
             .compactMap { $0 }
             .eraseToAnyPublisher()
     }
-    
+}
+
+
+// MARK: Biometric authentication
+// -----------------------------------
+
+extension SecurityManager {
     public func presentBiometricAuthentication() -> AnyPublisher<AuthenticationResult, Never> {
         guard let userIdentifier = provider.userIdentifier, provider.biometricSecurityKeychainItemName != nil else {
             log("No `userIdentifier` or `biometricSecurityKeychainItemName` configured in provider")
