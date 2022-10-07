@@ -16,11 +16,13 @@ let package = Package(
         .library(name: "IlluminateRouting", targets: ["IlluminateRouting"]),
         .library(name: "IlluminateSecurity", targets: ["IlluminateSecurity"]),
         .library(name: "IlluminateUI", targets: ["IlluminateUI"]),
+        .library(name: "IlluminateSupport", targets: ["IlluminateSupport"]),
     ],
     dependencies: [
         .package(url: "https://github.com/e-sites/Dysprosium.git", .upToNextMajor(from: "6.1.0")),
         .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "10.0.0")),
         .package(url: "https://github.com/siteline/SwiftUI-Introspect.git", .upToNextMajor(from: "0.1.3")),
+        .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.4.4")),
     ],
     targets: [
         .target(name: "IlluminateAuth", dependencies: [], path: "Sources/Auth"),
@@ -37,6 +39,9 @@ let package = Package(
             "Dysprosium",
             .product(name: "Introspect", package: "SwiftUI-Introspect")
         ], path: "Sources/UI"),
+        .target(name: "IlluminateSupport", dependencies: [
+            .product(name: "Logging", package: "swift-log")
+        ], path: "Sources/Support"),
     ],
     swiftLanguageVersions: [ .v5 ]
 )
