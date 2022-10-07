@@ -1,13 +1,36 @@
 # Illuminate
 
-## Auth
-- [Read instructions](Sources/Auth/README.md)
+### 🧑‍💻 [Auth](Sources/Auth/README.md)
+> Easily integrate authentication (providers) into apps.
 
-## Routing
-- [Read instructions](Sources/Routing/README.md)
+---
 
-## Coordination
-- [Read instructions](Sources/Coordination/README.md)
+### 🚏 [Routing](Sources/Routing/README.md)
+> RoutingManager and RoutingService takes care of handling url's
 
-## Codable
-- [Read instructions](Sources/Codable/README.md)
+---
+
+### 📍 [Coordination](Sources/Coordination/README.md)
+> Base coordinators for presenting new views.
+
+---
+
+### 🪜 [Codable](Sources/Codable/README.md)
+> Helps de- and encoding your models.
+
+---
+
+### 🛟 [Support](Sources/Support/README.md)
+> Appreciate the small things. 
+
+---
+
+### 📦 [Cache](Sources/Cache/README.md)
+> Helping you store objects or images in cache. 
+
+---
+
+### 👮 [Security](Sources/Security/README.md)
+> Securing the contents of your app by asking the user to authenticate themselves using either a pincode or biometric authentication.  
+
+---

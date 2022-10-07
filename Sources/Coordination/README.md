@@ -1,5 +1,7 @@
 # Coordination
 
+Base coordinators for presenting new views.
+
 ## Basic implementation
 
 > A single UINavigationController implementation where each view(controller) is pushed or set in the main stack.

@@ -9,10 +9,23 @@
 import Foundation
 import Logging
 
-class DebugPanelLogHandler: LogHandler {
+private extension String {
+    subscript(integerRange: Range<Int>) -> String {
+        let start = index(startIndex, offsetBy: integerRange.lowerBound)
+        let end = index(startIndex, offsetBy: integerRange.upperBound)
+        let range = start..<end
+        return String(self[range])
+    }
+}
+
+open class DebugPanelLogHandler: LogHandler {
     fileprivate(set) static var logLines: [String] = []
     
-    func log( // swiftlint:disable:this function_parameter_count
+    public init() {
+        
+    }
+    
+    public func log( // swiftlint:disable:this function_parameter_count
         level: Logger.Level,
         message: Logger.Message,
         metadata: Logger.Metadata?,
@@ -34,7 +47,7 @@ class DebugPanelLogHandler: LogHandler {
         DebugPanelLogHandler.logLines.append(line)
     }
     
-    subscript(metadataKey metadataKey: String) -> Logger.Metadata.Value? {
+    public subscript(metadataKey metadataKey: String) -> Logger.Metadata.Value? {
         get {
             return self.metadata[metadataKey]
         }
@@ -43,8 +56,8 @@ class DebugPanelLogHandler: LogHandler {
         }
     }
     
-    var metadata: Logger.Metadata = [:]
-    var logLevel: Logger.Level = .trace
+    public var metadata: Logger.Metadata = [:]
+    public var logLevel: Logger.Level = .trace
     
     private func prettify(_ metadata: Logger.Metadata) -> String? {
         if metadata.isEmpty {
