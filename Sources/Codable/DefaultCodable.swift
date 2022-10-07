@@ -136,12 +136,6 @@ extension KeyedDecodingContainer {
     }
 }
 
-extension KeyedEncodingContainer {
-    mutating func encode<P>(_ value: DefaultCodable<P>, forKey key: Key) throws {
-        try encode(value.wrappedValue, forKey: key)
-    }
-}
-
 extension DefaultCodable: Equatable where Strategy.RawValue: Equatable { }
 extension DefaultCodable: Hashable where Strategy.RawValue: Hashable { }
 
