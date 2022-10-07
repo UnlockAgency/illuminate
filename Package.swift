@@ -12,7 +12,9 @@ let package = Package(
         .library(name: "IlluminateAuth", targets: ["IlluminateAuth"]),
         .library(name: "IlluminateCache", targets: ["IlluminateCache"]),
         .library(name: "IlluminateCodable", targets: ["IlluminateCodable"]),
+        .library(name: "IlluminateCombine", targets: ["IlluminateCombine"]),
         .library(name: "IlluminateCoordination", targets: ["IlluminateCoordination"]),
+        .library(name: "IlluminateFoundation", targets: ["IlluminateFoundation"]),
         .library(name: "IlluminateRouting", targets: ["IlluminateRouting"]),
         .library(name: "IlluminateSecurity", targets: ["IlluminateSecurity"]),
         .library(name: "IlluminateUI", targets: ["IlluminateUI"]),
@@ -26,15 +28,19 @@ let package = Package(
         .target(name: "IlluminateAuth", dependencies: [], path: "Sources/Auth"),
         .target(name: "IlluminateCache", dependencies: [], path: "Sources/Cache"),
         .target(name: "IlluminateCodable", dependencies: [], path: "Sources/Codable"),
+        .target(name: "IlluminateCombine", dependencies: [], path: "Sources/Combine"),
         .testTarget(name: "CodableTests", dependencies: [
             .byName(name: "Nimble"),
             .byName(name: "IlluminateCodable")
         ], path: "Tests/CodableTests"),
         .target(name: "IlluminateCoordination", dependencies: [ "Dysprosium" ], path: "Sources/Coordination"),
+        .target(name: "IlluminateFoundation", dependencies: [], path: "Sources/Foundation"),
         .target(name: "IlluminateRouting", dependencies: [], path: "Sources/Routing"),
         .target(name: "IlluminateSecurity", dependencies: [], path: "Sources/Security"),
         .target(name: "IlluminateUI", dependencies: [
-            "Dysprosium",
+            .byName(name: "IlluminateFoundation"),
+            .byName(name: "IlluminateCombine"),
+            .byName(name: "Dysprosium"),
             .product(name: "Introspect", package: "SwiftUI-Introspect")
         ], path: "Sources/UI"),
     ],

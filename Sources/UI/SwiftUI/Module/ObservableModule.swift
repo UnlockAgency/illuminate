@@ -8,6 +8,9 @@
 import Foundation
 import SwiftUI
 import Dysprosium
+import Combine
+import IlluminateCombine
+import IlluminateFoundation
 
 public final class ObservableModule<T>: ObservableObject, DysprosiumCompatible, CustomDebugStringConvertible {
     
@@ -58,7 +61,7 @@ public final class ObservableModule<T>: ObservableObject, DysprosiumCompatible, 
         do {
             setResult(try await task())
         } catch let resultError {
-            logger.error("Error getting '\(T.self)': \(resultError)")
+            log("Error getting '\(T.self)': \(resultError)")
             setError(resultError)
         }
         setLoadingState(.notLoading)
