@@ -9,25 +9,22 @@ import SwiftUI
 
 extension Color {
     static var theme: Theme {
-        return Theme(
-            primary: Color.blue,
-            text: Color.Theme.Text(
-                primary: Color.black
-            )
-        )
+        return Theme.default
     }
-}
-
-extension Color {
-    struct Theme {
-        var primary: Color
-
-        var text: Text
+    
+    enum Branding {
+        public static var primary: Color {
+            return Color(theme.colors.primary)
+        }
+        
+        public static var secondary: Color {
+            return Color(theme.colors.secondary)
+        }
     }
-}
-
-extension Color.Theme {
-    struct Text {
-        var primary: Color
+    
+    enum Text {
+        public static var primary: Color {
+            return Color(theme.text.primary)
+        }
     }
 }

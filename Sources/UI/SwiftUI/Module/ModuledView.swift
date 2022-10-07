@@ -117,7 +117,7 @@ struct ModuleView_Previews: PreviewProvider {
                     }
                     .padding()
                     .background(
-                        Rectangle().fill(Color.theme.primary)
+                        Rectangle().fill(Color.Branding.primary)
                     )
                 }
                 
@@ -127,7 +127,7 @@ struct ModuleView_Previews: PreviewProvider {
                     }
                     .padding()
                     .background(
-                        Rectangle().fill(Color.theme.primary)
+                        Rectangle().fill(Color.Branding.primary)
                     )
                 }
                 
@@ -137,7 +137,7 @@ struct ModuleView_Previews: PreviewProvider {
                     }
                     .padding()
                     .background(
-                        Rectangle().fill(Color.theme.primary)
+                        Rectangle().fill(Color.Branding.primary)
                     )
                 }
                 
