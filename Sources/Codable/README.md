@@ -1,5 +1,7 @@
 # Codable
 
+Helps de- and encoding your models.
+
 ## UnknownableEnum
 
 ```swift
