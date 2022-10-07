@@ -15,7 +15,7 @@
 
 ---
 
-### 🦸 [Codable](Sources/Combine/README.md)
+### 🦸 [Combine](Sources/Combine/README.md)
 > The cape of the superhero.
 
 ---
@@ -45,7 +45,7 @@
 
 ---
 
-### 🎨 [Security](Sources/UI/README.md)
+### 🎨 [UI](Sources/UI/README.md)
 > Providing you with the basics of UI every project needs.
 
 ---
