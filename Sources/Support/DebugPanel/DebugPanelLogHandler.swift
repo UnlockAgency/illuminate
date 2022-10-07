@@ -21,6 +21,10 @@ private extension String {
 open class DebugPanelLogHandler: LogHandler {
     fileprivate(set) static var logLines: [String] = []
     
+    public init() {
+        
+    }
+    
     public func log( // swiftlint:disable:this function_parameter_count
         level: Logger.Level,
         message: Logger.Message,
