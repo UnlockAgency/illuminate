@@ -14,7 +14,7 @@ extension View {
     }
 }
 
-struct SwiftUICompatibility<Content: View> {
+public struct SwiftUICompatibility<Content: View> {
     
     public enum Function {
         case listRowSeparator(_ visibility: Visibility)

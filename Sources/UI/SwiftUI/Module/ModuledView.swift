@@ -16,13 +16,13 @@ import UIKit
 
 public struct ModuledView<Result, Content: View>: View {
     
-    @ObservedObject private var module: BaseViewModel.Module<Result>
+    @ObservedObject private var module: ObservableModule<Result>
 
     private let content: (Result) -> Content
     private let onReload: (() -> Void)?
     
     public init(
-        _ module: BaseViewModel.Module<Result>,
+        _ module: ObservableModule<Result>,
         @ViewBuilder content: @escaping (Result) -> Content,
         onReload: (() -> Void)? = nil
     ) {
@@ -31,10 +31,10 @@ public struct ModuledView<Result, Content: View>: View {
         self.onReload = onReload
     }
     
-    var body: some View {
+    public var body: some View {
         if module.loadingState == .loading {
             ZStack {
-                LoadingIndicator()
+                Spinner()
                     .frame(width: 24, height: 24)
             }
             .frame(maxWidth: .infinity)
@@ -43,18 +43,18 @@ public struct ModuledView<Result, Content: View>: View {
             Group {
                 if let error = module.error {
                     ZStack {
-                        ErrorStateView(error: error, onRetry: onReload)
+                       // ErrorStateView(error: error, onRetry: onReload)
                     }.frame(maxWidth: .infinity)
                     
                 } else {
                     content(module.result)
                 }
             }
-            .if(module.loadingState == .updating) {
-                $0.allowsHitTesting(false)
-                    .opacity(0.2)
-                    .overlay(UpdatingView(), alignment: .top)
-            }
+//            .if(module.loadingState == .updating) {
+//                $0.allowsHitTesting(false)
+//                    .opacity(0.2)
+//                    .overlay(UpdatingView(), alignment: .top)
+//            }
         }
     }
 }
@@ -64,7 +64,7 @@ extension ModuledView {
         var body: some View {
             ZStack {
                 Circle()
-                    .fill(Color(UIColor.Background.default))
+//                    .fill(Color.background.default)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 0)
                     .frame(width: 44, height: 44)
@@ -72,7 +72,7 @@ extension ModuledView {
                 Spinner()
                     .frame(width: 24, height: 24)
             }
-            .padding(.top, D.Content.padding * 2)
+//            .padding(.top, D.Content.padding * 2)
         }
     }
 }
@@ -117,7 +117,7 @@ struct ModuleView_Previews: PreviewProvider {
                     }
                     .padding()
                     .background(
-                        Rectangle().fill(Color(UIColor.Theme.primary))
+                        Rectangle().fill(Color.theme.primary)
                     )
                 }
                 
@@ -127,7 +127,7 @@ struct ModuleView_Previews: PreviewProvider {
                     }
                     .padding()
                     .background(
-                        Rectangle().fill(Color(UIColor.Theme.pink))
+                        Rectangle().fill(Color.theme.primary)
                     )
                 }
                 
@@ -137,13 +137,13 @@ struct ModuleView_Previews: PreviewProvider {
                     }
                     .padding()
                     .background(
-                        Rectangle().fill(Color(UIColor.Theme.yellow))
+                        Rectangle().fill(Color.theme.primary)
                     )
                 }
                 
                 Spacer()
             }.padding().previewDevice("iPhone 13 mini")
-        }.textStyle(.regular)
+        }
     }
 }
 #endif
