@@ -113,6 +113,7 @@ public struct DefaultCodable<Strategy: DefaultCodableStrategy>: Codable, CustomD
             let container = try decoder.singleValueContainer()
             self.wrappedValue = try container.decode(Strategy.RawValue.self)
         } catch {
+            print("IlluminateCodable [Warning] Error decoding \(Strategy.RawValue.self): \(error), falling back to \(Strategy.defaultValue)")
             self.wrappedValue = Strategy.defaultValue
         }
     }
@@ -126,7 +127,7 @@ public struct DefaultCodable<Strategy: DefaultCodableStrategy>: Codable, CustomD
     }
 }
 
-extension KeyedDecodingContainer {
+public extension KeyedDecodingContainer {
     func decode<P>(_: DefaultCodable<P>.Type, forKey key: Key) throws -> DefaultCodable<P> {
         if let value = try decodeIfPresent(DefaultCodable<P>.self, forKey: key) {
             return value
