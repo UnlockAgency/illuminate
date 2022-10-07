@@ -9,17 +9,6 @@ import Foundation
 
 #if !RELEASE
 import Foundation
-import UIKit
-import EasyPeasy
-#if canImport(Firebase)
-import Firebase
-#endif
-#if canImport(FirebaseMessaging)
-import FirebaseMessaging
-#endif
-#if canImport(FirebaseInstallations)
-import FirebaseInstallations
-#endif
 
 private struct DebugRow: Equatable {
     let key: String
