@@ -64,7 +64,6 @@ extension ModuledView {
         var body: some View {
             ZStack {
                 Circle()
-//                    .fill(Color.background.default)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 0)
                     .frame(width: 44, height: 44)
