@@ -19,12 +19,14 @@ let package = Package(
         .library(name: "IlluminateSecurity", targets: ["IlluminateSecurity"]),
         .library(name: "IlluminateUI", targets: ["IlluminateUI"]),
         .library(name: "IlluminateSupport", targets: ["IlluminateSupport"]),
+        .library(name: "IlluminateInjection", targets: ["IlluminateInjection"]),
     ],
     dependencies: [
         .package(url: "https://github.com/e-sites/Dysprosium.git", .upToNextMajor(from: "6.1.0")),
         .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "10.0.0")),
         .package(url: "https://github.com/siteline/SwiftUI-Introspect.git", .upToNextMajor(from: "0.1.3")),
         .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.4.4")),
+        .package(url: "https://github.com/Swinject/Swinject.git", .upToNextMajor(from: "2.8.2")),
     ],
     targets: [
         .target(name: "IlluminateAuth", dependencies: [], path: "Sources/Auth"),
@@ -48,6 +50,9 @@ let package = Package(
         .target(name: "IlluminateSupport", dependencies: [
             .product(name: "Logging", package: "swift-log")
         ], path: "Sources/Support"),
+        .target(name: "IlluminateInjection", dependencies: [
+            .byName(name: "Swinject"),
+        ], path: "Sources/Injection"),
     ],
     swiftLanguageVersions: [ .v5 ]
 )
