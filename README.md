@@ -14,9 +14,18 @@
 > Helps de- and encoding your models.
 
 ---
+### 🦸 [Combine](Sources/Combine/README.md)
+> The cape of the superhero.
+
+---
 
 ### 📍 [Coordination](Sources/Coordination/README.md)
 > Base coordinators for presenting new views.
+
+---
+
+### 🏗️ [Foundation](Sources/Foundation/README.md)
+> _insert-catchy-text-here_
 
 ---
 
@@ -37,5 +46,10 @@
 
 ### 🛟 [Support](Sources/Support/README.md)
 > Appreciate the small things. 
+
+---
+
+### 🎨 [UI](Sources/UI/README.md)
+> Providing you with the basics of UI every project needs.
 
 ---
