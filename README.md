@@ -1,55 +1,55 @@
 # Illuminate
 
-### 🧑‍💻 [Auth](Sources/Auth/README.md)
+### 🧑‍💻 [Auth](Sources/Auth/)
 > Easily integrate authentication (providers) into apps.
 
 ---
 
-### 📦 [Cache](Sources/Cache/README.md)
+### 📦 [Cache](Sources/Cache/)
 > Helping you store objects or images in cache. 
 
 ---
 
-### 🪜 [Codable](Sources/Codable/README.md)
+### 🪜 [Codable](Sources/Codable/)
 > Helps de- and encoding your models.
 
 ---
-### 🦸 [Combine](Sources/Combine/README.md)
+### 🦸 [Combine](Sources/Combine/)
 > The cape of the superhero.
 
 ---
 
-### 📍 [Coordination](Sources/Coordination/README.md)
+### 📍 [Coordination](Sources/Coordination/)
 > Base coordinators for presenting new views.
 
 ---
 
-### 🏗️ [Foundation](Sources/Foundation/README.md)
+### 🏗️ [Foundation](Sources/Foundation/)
 > _insert-catchy-text-here_
 
 ---
 
-### 💉 [Injection](Sources/Injection/README.md)
+### 💉 [Injection](Sources/Injection/)
 > A helper property wrapper for Swinject's DI service
 
 ---
 
-### 🚏 [Routing](Sources/Routing/README.md)
+### 🚏 [Routing](Sources/Routing/)
 > RoutingManager and RoutingService takes care of handling url's
 
 ---
 
-### 👮 [Security](Sources/Security/README.md)
+### 👮 [Security](Sources/Security/)
 > Securing the contents of your app by asking the user to authenticate themselves using either a pincode or biometric authentication.  
 
 ---
 
-### 🛟 [Support](Sources/Support/README.md)
+### 🛟 [Support](Sources/Support/)
 > Appreciate the small things. 
 
 ---
 
-### 🎨 [UI](Sources/UI/README.md)
+### 🎨 [UI](Sources/UI/)
 > Providing you with the basics of UI every project needs.
 
 ---
