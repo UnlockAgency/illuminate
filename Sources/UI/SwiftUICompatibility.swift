@@ -20,6 +20,7 @@ public struct SwiftUICompatibility<Content: View> {
         case listRowSeparator(_ visibility: Visibility)
         case scrollContentBackground(_ visibility: Visibility)
         case scrollDisabled(_ disabled: Bool)
+        case returnKeyType(_ returnKeyType: UIReturnKeyType)
     }
     
     @available(*, unavailable, message: "SwiftUICompatibility is not supposed to be used as an instance")
@@ -32,10 +33,15 @@ public struct SwiftUICompatibility<Content: View> {
         switch function {
         case .listRowSeparator(let visibility):
             listRowSeparator(view, visibility)
+            
         case .scrollContentBackground(let visibility):
             scrollContentBackground(view, visibility)
+            
         case .scrollDisabled(let disabled):
             scrollDisabled(view, disabled)
+            
+        case .returnKeyType(let returnKeyType):
+            self.returnKeyType(view, returnKeyType)
         }
     }
     
@@ -64,6 +70,15 @@ public struct SwiftUICompatibility<Content: View> {
             $0.isScrollEnabled = !disabled
         }
     }
+    
+    private static func returnKeyType(_ view: Content, _ returnKeyType: UIReturnKeyType) -> some View {
+        if #available(iOS 15.0, *) {
+            return view.submitLabel(returnKeyType.submitLabel)
+        }
+        return view.introspectTextField {
+            $0.returnKeyType = returnKeyType
+        }
+    }
 }
 
 extension SwiftUICompatibility {
@@ -80,6 +95,22 @@ extension SwiftUICompatibility {
             case .visible: return .visible
             case .hidden: return .hidden
             }
+        }
+    }
+}
+
+@available(iOS 15.0, *)
+private extension UIReturnKeyType {
+    var submitLabel: SubmitLabel {
+        switch self {
+        case .done: return .done
+        case .continue: return .continue
+        case .go: return .go
+        case .join: return .join
+        case .next: return .next
+        case .search: return .search
+        case .send: return .send
+        default: return .return
         }
     }
 }
