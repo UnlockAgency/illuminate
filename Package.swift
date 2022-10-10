@@ -33,10 +33,6 @@ let package = Package(
         .target(name: "IlluminateCache", dependencies: [], path: "Sources/Cache"),
         .target(name: "IlluminateCodable", dependencies: [], path: "Sources/Codable"),
         .target(name: "IlluminateCombine", dependencies: [], path: "Sources/Combine"),
-        .testTarget(name: "CodableTests", dependencies: [
-            .byName(name: "Nimble"),
-            .byName(name: "IlluminateCodable")
-        ], path: "Tests/CodableTests"),
         .target(name: "IlluminateCoordination", dependencies: [ "Dysprosium" ], path: "Sources/Coordination"),
         .target(name: "IlluminateFoundation", dependencies: [], path: "Sources/Foundation"),
         .target(name: "IlluminateRouting", dependencies: [], path: "Sources/Routing"),
@@ -53,6 +49,18 @@ let package = Package(
         .target(name: "IlluminateInjection", dependencies: [
             .byName(name: "Swinject"),
         ], path: "Sources/Injection"),
+        
+        // ---
+        
+        .testTarget(name: "CodableTests", dependencies: [
+            .byName(name: "Nimble"),
+            .byName(name: "IlluminateCodable")
+        ], path: "Tests/CodableTests"),
+        .testTarget(name: "InjectionTests", dependencies: [
+            .byName(name: "Nimble"),
+            .byName(name: "Swinject"),
+            .byName(name: "IlluminateInjection")
+        ], path: "Tests/InjectionTests"),
     ],
     swiftLanguageVersions: [ .v5 ]
 )
