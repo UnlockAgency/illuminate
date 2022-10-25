@@ -361,6 +361,10 @@ open class DebugPanel {
         
     }
     
+    public func add(key: String, value: String?) {
+        
+    }
+    
     public func addButton(title: String, action: @escaping (() -> Void)) {
         
     }
