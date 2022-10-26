@@ -48,10 +48,7 @@ public struct CodableConvertor<Provider: ConvertorValueProvider>: Codable, Custo
         }
         
         do {
-            if Provider.ReturnType.self != Provider.ValueType.self {
-                throw ConvertorError.valueTypeMismatch
-                
-            } else if Provider.shouldAlwaysDecode() {
+            if Provider.shouldAlwaysDecode() {
                 throw ConvertorError.shouldAlwaysDecode
             }
             wrappedValue = try container.decode(Provider.ReturnType.self)
