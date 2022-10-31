@@ -17,7 +17,9 @@ let package = Package(
         .library(name: "IlluminateFoundation", targets: ["IlluminateFoundation"]),
         .library(name: "IlluminateRouting", targets: ["IlluminateRouting"]),
         .library(name: "IlluminateSecurity", targets: ["IlluminateSecurity"]),
-        .library(name: "IlluminateUI", targets: ["IlluminateUI"]),
+        .library(name: "IlluminateUI_Assets", targets: ["IlluminateUI_Assets"]),
+        .library(name: "IlluminateUI_Helpers", targets: ["IlluminateUI_Helpers"]),
+        .library(name: "IlluminateUI_Module", targets: ["IlluminateUI_Module"]),
         .library(name: "IlluminateSupport", targets: ["IlluminateSupport"]),
         .library(name: "IlluminateInjection", targets: ["IlluminateInjection"]),
     ],
@@ -37,12 +39,14 @@ let package = Package(
         .target(name: "IlluminateFoundation", dependencies: [], path: "Sources/Foundation"),
         .target(name: "IlluminateRouting", dependencies: [], path: "Sources/Routing"),
         .target(name: "IlluminateSecurity", dependencies: [], path: "Sources/Security"),
-        .target(name: "IlluminateUI", dependencies: [
+        .target(name: "IlluminateUI_Helpers", dependencies: [
             .byName(name: "IlluminateFoundation"),
             .byName(name: "IlluminateCombine"),
             .byName(name: "Dysprosium"),
             .product(name: "Introspect", package: "SwiftUI-Introspect")
-        ], path: "Sources/UI"),
+        ], path: "Sources/UI/Helpers"),
+        .target(name: "IlluminateUI_Assets", path: "Sources/UI/Assets"),
+        .target(name: "IlluminateUI_Module", dependencies: [ "IlluminateUI_Assets" ], path: "Sources/UI/Module"),
         .target(name: "IlluminateSupport", dependencies: [
             .product(name: "Logging", package: "swift-log")
         ], path: "Sources/Support"),

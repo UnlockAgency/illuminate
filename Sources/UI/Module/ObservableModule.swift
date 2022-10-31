@@ -61,7 +61,7 @@ public final class ObservableModule<T>: ObservableObject, DysprosiumCompatible, 
         do {
             setResult(try await task())
         } catch let resultError {
-            log("Error getting '\(T.self)': \(resultError)")
+            print("[Illuminate UI] Error getting '\(T.self)': \(resultError)")
             setError(resultError)
         }
         setLoadingState(.notLoading)
@@ -89,7 +89,7 @@ public final class ObservableModule<T>: ObservableObject, DysprosiumCompatible, 
     }
     
     public var debugDescription: String {
-        return "<Module<\(T.self)>> [ result: \(result), error: \(error.optionalDescription), loadingState: \(loadingState) ]"
+        return "<Module<\(T.self)>> [ result: \(result), error: \(String(describing: error)), loadingState: \(loadingState) ]"
     }
     
     deinit {

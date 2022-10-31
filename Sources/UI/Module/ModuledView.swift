@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Introspect
 import Combine
+import IlluminateUI_Assets
 
 #if canImport(UIKit)
 import UIKit
@@ -116,7 +117,7 @@ struct ModuleView_Previews: PreviewProvider {
                     }
                     .padding()
                     .background(
-                        Rectangle().fill(Color.Branding.primary)
+                        Rectangle().fill(.blue)
                     )
                 }
                 
@@ -126,7 +127,7 @@ struct ModuleView_Previews: PreviewProvider {
                     }
                     .padding()
                     .background(
-                        Rectangle().fill(Color.Branding.primary)
+                        Rectangle().fill(.blue)
                     )
                 }
                 
@@ -136,7 +137,7 @@ struct ModuleView_Previews: PreviewProvider {
                     }
                     .padding()
                     .background(
-                        Rectangle().fill(Color.Branding.primary)
+                        Rectangle().fill(.blue)
                     )
                 }
                 

@@ -20,6 +20,8 @@ public struct Spinner: View {
 
     @State var rotationDegree = initialDegree
     
+    private var color: Color = Color.black
+    
     public let lineWidth: CGFloat
     
     public init(lineWidth: CGFloat = 4) {
@@ -32,7 +34,7 @@ public struct Spinner: View {
                 Circle()
                     .trim(from: spinnerStart, to: spinnerEnd)
                     .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                    .fill(Color.Branding.primary)
+                    .fill(color)
                     .rotationEffect(rotationDegree)
             }
         }
@@ -43,6 +45,12 @@ public struct Spinner: View {
                 self.animateSpinner()
             }
         }
+    }
+    
+    public func foregroundColor(_ color: Color) -> Self {
+        var view = self
+        view.color = color
+        return view
     }
 
     func animateSpinner(with duration: Double, completion: @escaping (() -> Void)) {
