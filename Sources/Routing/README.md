@@ -35,7 +35,7 @@ routingManager.registerRoutes([
 
 container.register(RoutingService.self) { _ in routingManager }
 
-routingService.publisher(for: ProductDetailRoute.self)
+routingService.valuePublisher(for: ProductDetailRoute.self)
 	.sink { value in
 	    // Handle the product detail
 	}.store(in: &cancellables)

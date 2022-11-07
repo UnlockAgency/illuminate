@@ -20,14 +20,29 @@ public protocol RoutingService: AnyObject {
 #endif
     func handleNotification(response: UNNotificationResponse)
     
+    @available(*, message: "Use `valuePublisher(for:)` instead")
+    func publisher<T: Route>(for type: T.Type) -> AnyPublisher<T.ValueType, Never>
+    
+    
     /// Listen for route events
     ///
     /// **Example**
     /// ```
-    /// routingService.publisher(for: OAuthAuthenticatedRoute.self)
+    /// routingService.valuePublisher(for: OAuthAuthenticatedRoute.self)
     ///     .sink { (value: OAuthAuthenticatedValue) in
     ///        // ... received value when 'xximo://oauth/authenticated' is openend
     ///     }.store(in: &cancellables)
     /// ```
-    func publisher<T: Route>(for type: T.Type) -> AnyPublisher<T.ValueType, Never>
+    func valuePublisher<T: Route>(for type: T.Type) -> AnyPublisher<T.ValueType, Never>
+    
+    /// Listen for route events
+    ///
+    /// **Example**
+    /// ```
+    /// routingService.routePublisher(for: OAuthAuthenticatedRoute.self)
+    ///     .sink { (value: OAuthAuthenticatedRoute) in
+    ///        // ... 
+    ///     }.store(in: &cancellables)
+    /// ```
+    func routePublisher<T: Route>(for type: T.Type) -> AnyPublisher<T, Never>
 }

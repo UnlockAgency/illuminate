@@ -30,10 +30,22 @@ open class RoutingManager: RoutingService {
         allRouteTypes.append(contentsOf: routeTypes)
     }
     
-    public func publisher<T: Route>(for type: T.Type) -> AnyPublisher<T.ValueType, Never> {
+    public func valuePublisher<T: Route>(for type: T.Type) -> AnyPublisher<T.ValueType, Never> {
         return subject
             .share()
             .compactMap { ($0 as? T)?.value }
+            .eraseToAnyPublisher()
+    }
+    
+    @available(*, message: "Use `valuePublisher(for:)` instead")
+    public func publisher<T: Route>(for type: T.Type) -> AnyPublisher<T.ValueType, Never> {
+        return valuePublisher(for: type)
+    }
+    
+    public func routePublisher<T: Route>(for type: T.Type) -> AnyPublisher<T, Never> {
+        return subject
+            .share()
+            .compactMap { ($0 as? T) }
             .eraseToAnyPublisher()
     }
     
