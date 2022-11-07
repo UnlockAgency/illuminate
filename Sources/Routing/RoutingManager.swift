@@ -44,13 +44,13 @@ open class RoutingManager: RoutingService {
         }
         
         if let url = launchOptions[.url] as? URL {
-            handle(url: url)
+            handle(url)
         }
     }
 #endif
     
     @discardableResult
-    open func handle(url: URL) -> Bool {
+    public func handle(url: URL) -> Bool {
         for routeType in allRouteTypes {
             if let route = routeType.handle(url: url) {
                 DispatchQueue.main.async {
@@ -62,17 +62,29 @@ open class RoutingManager: RoutingService {
         return false
     }
     
+    @discardableResult
+    open func handle(_ routable: Routable) -> Bool {
+        if let url = routable as? URL {
+            return handle(url: url)
+            
+        } else if let routeType = routable as? RouteType {
+            subject.send(routeType)
+            return true
+        }
+        return false
+    }
+    
     open func handleNotification(response: UNNotificationResponse) {
         let userInfo = response.notification.request.content.userInfo
         
         if let data = userInfo["data"] as? [String: Any],
            let urlString = data["url"] as? String,
            let url = URL(string: urlString) {
-            _ = handle(url: url)
+            _ = handle(url)
             
         } else if let urlString = userInfo["url"] as? String,
                   let url = URL(string: urlString) {
-            _ = handle(url: url)
+            _ = handle(url)
         }
     }
 }

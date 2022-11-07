@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol RouteType {
+public protocol RouteType: Routable {
     static func handle(url: URL) -> RouteType?
 }
 
