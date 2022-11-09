@@ -70,7 +70,7 @@ public class BackgroundProcessManager: BackgroundProcessService {
     
     private func submitBackgroundTasks(delay: TimeInterval) {
         for task in tasks {
-            submitBackgroundTask(task: task)
+            submitBackgroundTask(task: Task(identifier: task.identifier, interval: delay))
         }
     }
     
