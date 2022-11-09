@@ -34,9 +34,8 @@ public class BackgroundProcessManager: BackgroundProcessService {
         logger.debug("Booting BackgroundProcessManager...", metadata: [ "service": "background" ])
         
         NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.submitBackgroundTasks(delay: 10)
+            .sink { [weak self] _ in
+                self?.owner.submitBackgroundTasks(delay: 10)
             }.store(in: &cancellables)
         #endif
     }
