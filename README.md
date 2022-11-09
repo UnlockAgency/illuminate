@@ -39,6 +39,11 @@
 
 ---
 
+### 🙊 [Permissions](Sources/Permissions/)
+> A helper module to ask for users permissions
+
+---
+
 ### 🚏 [Routing](Sources/Routing/)
 > RoutingManager and RoutingService takes care of handling url's
 

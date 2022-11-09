@@ -23,6 +23,7 @@ let package = Package(
         .library(name: "IlluminateSupport", targets: ["IlluminateSupport"]),
         .library(name: "IlluminateInjection", targets: ["IlluminateInjection"]),
         .library(name: "IlluminateKeychain", targets: ["IlluminateKeychain"]),
+        .library(name: "IlluminatePermissions", targets: ["IlluminatePermissions"]),
     ],
     dependencies: [
         .package(url: "https://github.com/e-sites/Dysprosium.git", .upToNextMajor(from: "6.1.0")),
@@ -59,6 +60,9 @@ let package = Package(
             .byName(name: "KeychainAccess"),
             .byName(name: "IlluminateInjection"),
         ], path: "Sources/Keychain"),
+        .target(name: "IlluminatePermissions", dependencies: [
+            .product(name: "Logging", package: "swift-log")
+        ], path: "Sources/Permissions"),
         
         // ---
         
