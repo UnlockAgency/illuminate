@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import Combine
 import UserNotifications
-import IlluminateInjection
 import CoreLocation
 import Logging
 
