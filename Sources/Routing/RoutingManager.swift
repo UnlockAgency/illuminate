@@ -59,6 +59,20 @@ open class RoutingManager: RoutingService {
             handle(url)
         }
     }
+    
+    open func handleNotification(response: UNNotificationResponse) {
+        let userInfo = response.notification.request.content.userInfo
+        
+        if let data = userInfo["data"] as? [String: Any],
+           let urlString = data["url"] as? String,
+           let url = URL(string: urlString) {
+            _ = handle(url)
+            
+        } else if let urlString = userInfo["url"] as? String,
+                  let url = URL(string: urlString) {
+            _ = handle(url)
+        }
+    }
 #endif
     
     @discardableResult
@@ -84,19 +98,5 @@ open class RoutingManager: RoutingService {
             return true
         }
         return false
-    }
-    
-    open func handleNotification(response: UNNotificationResponse) {
-        let userInfo = response.notification.request.content.userInfo
-        
-        if let data = userInfo["data"] as? [String: Any],
-           let urlString = data["url"] as? String,
-           let url = URL(string: urlString) {
-            _ = handle(url)
-            
-        } else if let urlString = userInfo["url"] as? String,
-                  let url = URL(string: urlString) {
-            _ = handle(url)
-        }
     }
 }

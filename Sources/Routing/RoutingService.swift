@@ -17,8 +17,8 @@ public protocol RoutingService: AnyObject {
     func handle(url: URL) -> Bool
 #if canImport(UIKit)
     func handle(launchOptions: [UIApplication.LaunchOptionsKey: Any]?)
-#endif
     func handleNotification(response: UNNotificationResponse)
+#endif
     
     @available(*, message: "Use `valuePublisher(for:)` instead")
     func publisher<T: Route>(for type: T.Type) -> AnyPublisher<T.ValueType, Never>

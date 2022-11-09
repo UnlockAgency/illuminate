@@ -22,6 +22,7 @@ let package = Package(
         .library(name: "IlluminateUI_Module", targets: ["IlluminateUI_Module"]),
         .library(name: "IlluminateSupport", targets: ["IlluminateSupport"]),
         .library(name: "IlluminateInjection", targets: ["IlluminateInjection"]),
+        .library(name: "IlluminateKeychain", targets: ["IlluminateKeychain"]),
     ],
     dependencies: [
         .package(url: "https://github.com/e-sites/Dysprosium.git", .upToNextMajor(from: "6.1.0")),
@@ -29,6 +30,7 @@ let package = Package(
         .package(url: "https://github.com/siteline/SwiftUI-Introspect.git", .upToNextMajor(from: "0.1.3")),
         .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.4.4")),
         .package(url: "https://github.com/Swinject/Swinject.git", .upToNextMajor(from: "2.8.2")),
+        .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", .upToNextMajor(from: "4.2.2")),
     ],
     targets: [
         .target(name: "IlluminateAuth", dependencies: [], path: "Sources/Auth"),
@@ -53,6 +55,10 @@ let package = Package(
         .target(name: "IlluminateInjection", dependencies: [
             .byName(name: "Swinject"),
         ], path: "Sources/Injection"),
+        .target(name: "IlluminateKeychain", dependencies: [
+            .byName(name: "KeychainAccess"),
+            .byName(name: "IlluminateInjection"),
+        ], path: "Sources/Keychain"),
         
         // ---
         
