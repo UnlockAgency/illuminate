@@ -9,92 +9,95 @@ import SwiftUI
 import Introspect
 
 extension View {
-    public func compatibleCall(_ function: SwiftUICompatibility<Self>.Function) -> some View {
-        return SwiftUICompatibility.call(function, withView: self)
+    public func compatibleCall(_ function: SwiftUICompatibilityFunction<Self>) -> some View {
+        return AnyView(function.call(in: self))
     }
 }
 
-public struct SwiftUICompatibility<Content: View> {
+public struct SwiftUICompatibilityFunction<V: View> {
     
-    public enum Function {
-        case listRowSeparator(_ visibility: Visibility)
-        case scrollContentBackground(_ visibility: Visibility)
-        case scrollDisabled(_ disabled: Bool)
-        case returnKeyType(_ returnKeyType: UIReturnKeyType)
-    }
+    @ViewBuilder
+    let closure: (V) -> any View
     
-    @available(*, unavailable, message: "SwiftUICompatibility is not supposed to be used as an instance")
-    init() {
-        fatalError("SwiftUICompatibility is not supposed to be used as an instance")
+    private init(@ViewBuilder closure: @escaping (V) -> any View) {
+        self.closure = closure
     }
     
     @ViewBuilder
-    fileprivate static func call(_ function: Function, withView view: Content) -> some View {
-        switch function {
-        case .listRowSeparator(let visibility):
-            listRowSeparator(view, visibility)
+    func call(in view: V) -> any View {
+        closure(view)
+    }
+}
+
+extension SwiftUICompatibilityFunction {
+    public static func scrollDisabled(_ disabled: Bool) -> SwiftUICompatibilityFunction {
+        return SwiftUICompatibilityFunction { view in
+            if #available(iOS 16.0, *) {
+                return view.scrollDisabled(disabled)
+            }
             
-        case .scrollContentBackground(let visibility):
-            scrollContentBackground(view, visibility)
+            return view.introspectScrollView {
+                $0.isScrollEnabled = !disabled
+            }
+        }
+    }
+    
+    public static func returnKeyType(_ returnKeyType: UIReturnKeyType) -> SwiftUICompatibilityFunction {
+        return SwiftUICompatibilityFunction { view in
+            if #available(iOS 15.0, *) {
+                return view.submitLabel(returnKeyType.submitLabel)
+            }
+            return view.introspectTextField {
+                $0.returnKeyType = returnKeyType
+            }
+        }
+    }
+    
+    public static func listRowSeparator(_ visibility: Visibility) -> SwiftUICompatibilityFunction {
+        return SwiftUICompatibilityFunction { view in
+            if #available(iOS 15.0, *) {
+                return view.listRowSeparator(visibility.value)
+            }
             
-        case .scrollDisabled(let disabled):
-            scrollDisabled(view, disabled)
+            return view
+        }
+    }
+    
+    public static func scrollContentBackground(_ visibility: Visibility) -> SwiftUICompatibilityFunction {
+        return SwiftUICompatibilityFunction { view in
+            if #available(iOS 16.0, *) {
+                return view.scrollContentBackground(visibility.value)
+            }
             
-        case .returnKeyType(let returnKeyType):
-            self.returnKeyType(view, returnKeyType)
+            return view
         }
     }
     
-    private static func listRowSeparator(_ view: Content, _ visibility: Visibility) -> some View {
-        if #available(iOS 15.0, *) {
-            return view.listRowSeparator(visibility.value)
-        }
-        
-        return view
-    }
-    
-    private static func scrollContentBackground(_ view: Content, _ visibility: Visibility) -> some View {
-        if #available(iOS 16.0, *) {
-            return view.scrollContentBackground(visibility.value)
-        }
-        
-        return view
-    }
-    
-    private static func scrollDisabled(_ view: Content, _ disabled: Bool) -> some View {
-        if #available(iOS 16.0, *) {
-            return view.scrollDisabled(disabled)
-        }
-        
-        return view.introspectScrollView {
-            $0.isScrollEnabled = !disabled
-        }
-    }
-    
-    private static func returnKeyType(_ view: Content, _ returnKeyType: UIReturnKeyType) -> some View {
-        if #available(iOS 15.0, *) {
-            return view.submitLabel(returnKeyType.submitLabel)
-        }
-        return view.introspectTextField {
-            $0.returnKeyType = returnKeyType
+    public static func tint(_ color: Color?) -> SwiftUICompatibilityFunction {
+        return SwiftUICompatibilityFunction { view in
+            if #available(iOS 16.0, *) {
+                view.tint(color)
+            } else {
+                view.introspect(selector: TargetViewSelector.siblingContaining) { (targetView: UIView) in
+                    targetView.tintColor = color?.uiColor()
+                }
+            }
         }
     }
 }
 
-extension SwiftUICompatibility {
-    // Overrides iOS 15.0 Visibility Enum
-    public enum Visibility: CaseIterable {
-        case automatic
-        case visible
-        case hidden
-        
-        @available(iOS 15.0, *)
-        var value: SwiftUI.Visibility {
-            switch self {
-            case .automatic: return .automatic
-            case .visible: return .visible
-            case .hidden: return .hidden
-            }
+// Overrides iOS 15.0 Visibility Enum
+public enum Visibility: CaseIterable {
+    case automatic
+    case visible
+    case hidden
+    
+    @available(iOS 15.0, *)
+    var value: SwiftUI.Visibility {
+        switch self {
+        case .automatic: return .automatic
+        case .visible: return .visible
+        case .hidden: return .hidden
         }
     }
 }
