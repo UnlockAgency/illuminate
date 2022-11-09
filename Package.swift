@@ -24,6 +24,7 @@ let package = Package(
         .library(name: "IlluminateInjection", targets: ["IlluminateInjection"]),
         .library(name: "IlluminateKeychain", targets: ["IlluminateKeychain"]),
         .library(name: "IlluminatePermissions", targets: ["IlluminatePermissions"]),
+        .library(name: "IlluminateNotifications", targets: ["IlluminateNotifications"]),
     ],
     dependencies: [
         .package(url: "https://github.com/e-sites/Dysprosium.git", .upToNextMajor(from: "6.1.0")),
@@ -32,6 +33,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.4.4")),
         .package(url: "https://github.com/Swinject/Swinject.git", .upToNextMajor(from: "2.8.2")),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", .upToNextMajor(from: "4.2.2")),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "8.0.0")),
     ],
     targets: [
         .target(name: "IlluminateAuth", dependencies: [], path: "Sources/Auth"),
@@ -63,6 +65,13 @@ let package = Package(
         .target(name: "IlluminatePermissions", dependencies: [
             .product(name: "Logging", package: "swift-log")
         ], path: "Sources/Permissions"),
+        .target(name: "IlluminateNotifications", dependencies: [
+            .byName(name: "IlluminateInjection"),
+            .byName(name: "IlluminateFoundation"),
+            .byName(name: "IlluminateSupport"),
+            .product(name: "Logging", package: "swift-log"),
+            .product(name: "FirebaseMessaging", package: "firebase-ios-sdk")
+        ], path: "Sources/Notifications"),
         
         // ---
         

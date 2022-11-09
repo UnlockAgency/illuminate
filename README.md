@@ -39,6 +39,11 @@
 
 ---
 
+### 📣 [Notifications](Sources/Notifications/)
+> Handle (remote) notificiations.
+
+---
+
 ### 🙊 [Permissions](Sources/Permissions/)
 > A helper module to ask for users permissions
 
