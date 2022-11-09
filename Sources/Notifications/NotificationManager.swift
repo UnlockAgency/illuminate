@@ -98,12 +98,13 @@ public class NotificationManager: NSObject, NotificationService {
         isRemoteRegistering = true
         Task { @MainActor in
             do {
-                logger?.debug("Registering device with remote, fcmToken '\(fcmToken)'", metadata: [ "service": "notifications" ])
                 try await registerDeviceHandler(fcmToken)
                 didRegisterRemoteFcmToken = fcmToken
-                logger?.info("Succesfully registered device with remote", metadata: [ "service": "notifications" ])
+                logger?.debug("Registered device with remote, fcmToken '\(fcmToken)'", metadata: [ "service": "notifications" ])
             } catch {
-                logger?.error("Error registering device: \(error)", metadata: [ "service": "notifications" ])
+                if (error as? NotificationError)?.code != NotificationError.postpone.code {
+                    logger?.error("Error registering device: \(error)", metadata: [ "service": "notifications" ])
+                }
             }
             isRemoteRegistering = false
         }
@@ -127,8 +128,8 @@ public class NotificationManager: NSObject, NotificationService {
     
     public func subscribe(to topic: any NotificationTopicType) -> AnyPublisher<Void, NotificationError> {
         logger?.debug("Subscribing to topic '\(topic)' ...", metadata: [ "service": "notifications" ])
-        return Future<Void, NotificationError> { [weak self]  promise in
-            Messaging.messaging().subscribe(toTopic: topic.name) {error in
+        return Future<Void, NotificationError> { [weak self] promise in
+            Messaging.messaging().subscribe(toTopic: topic.name) { error in
                 if let error {
                     self?.logger?.error("Failed subscribing to topic '\(topic.name)': \(error)", metadata: [ "service": "notifications" ])
                     promise(.failure(NotificationError(error: error)))
@@ -145,7 +146,7 @@ public class NotificationManager: NSObject, NotificationService {
     
     public func unsubscribe(to topic: any NotificationTopicType) -> AnyPublisher<Void, NotificationError> {
         logger?.debug("Unsubscribing from topic '\(topic)' ...", metadata: [ "service": "notifications" ])
-        return Future<Void, NotificationError> { [weak self]  promise in
+        return Future<Void, NotificationError> { [weak self] promise in
             Messaging.messaging().unsubscribe(fromTopic: topic.name) { error in
                 if let error {
                     self?.logger?.error("Failed unsubscribing from topic '\(topic.name)': \(error)", metadata: [ "service": "notifications" ])

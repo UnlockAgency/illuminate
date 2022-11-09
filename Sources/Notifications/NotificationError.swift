@@ -8,10 +8,15 @@
 import Foundation
 
 public struct NotificationError: Error {
-    public let underlyingError: Error?
     
-    public init(error: Error?) {
+    public static let postpone = NotificationError(code: 721)
+    
+    public let underlyingError: Error?
+    public let code: Int
+    
+    public init(code: Int = 0, error: Error? = nil) {
         self.underlyingError = error
+        self.code = 0
     }
     
 }
