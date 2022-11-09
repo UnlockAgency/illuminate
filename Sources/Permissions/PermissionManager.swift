@@ -46,20 +46,27 @@ final public class PermissionManager: NSObject, PermissionService {
     
     private func makeRequestPermission(for type: PermissionType) -> AnyPublisher<PermissionStatus, Never> {
         logger?.debug("Requesting permission for '\(type)' ...", metadata: [ "service": "permissions" ])
+        let publisher: AnyPublisher<PermissionStatus, Never>
+        
         switch type {
         case .location:
-            return Future<PermissionStatus, Never> { [weak self] promise in
+            publisher = Future<PermissionStatus, Never> { [weak self] promise in
                 self?.requestLocationPromises.append(promise)
                 self?.aLocationManager.requestWhenInUseAuthorization()
             }.eraseToAnyPublisher()
             
         case .notifications:
-            return registerNotifications()
+            publisher = registerNotifications()
                 .map { PermissionStatus.granted }
                 .catch { _ in
                     return Just(PermissionStatus.declined).eraseToAnyPublisher()
                 }.eraseToAnyPublisher()
         }
+        
+        return publisher.map { [weak self] status in
+            self?.logger?.info("Permission request for '\(type)' result: \(status)", metadata: [ "service": "permissions" ])
+            return status
+        }.eraseToAnyPublisher()
     }
     
     public func hasRequestedPermission(for type: PermissionType) -> Bool {
