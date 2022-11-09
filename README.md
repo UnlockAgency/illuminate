@@ -1,9 +1,15 @@
 # Illuminate
 
-### 🧑‍💻 [Auth](Sources/Auth/)
+### 🕑 [Auth](Sources/Auth/)
+> Helping running and maintaining background processes 
+
+---
+
+### 🧑‍💻 [BackgroundProcess](Sources/BackgroundProcess/)
 > Easily integrate authentication (providers) into apps.
 
 ---
+
 
 ### 📦 [Cache](Sources/Cache/)
 > Helping you store objects or images in cache. 

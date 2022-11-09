@@ -25,6 +25,7 @@ let package = Package(
         .library(name: "IlluminateKeychain", targets: ["IlluminateKeychain"]),
         .library(name: "IlluminatePermissions", targets: ["IlluminatePermissions"]),
         .library(name: "IlluminateNotifications", targets: ["IlluminateNotifications"]),
+        .library(name: "IlluminateBackgroundProcess", targets: ["IlluminateBackgroundProcess"]),
     ],
     dependencies: [
         .package(url: "https://github.com/e-sites/Dysprosium.git", .upToNextMajor(from: "6.1.0")),
@@ -72,6 +73,9 @@ let package = Package(
             .product(name: "Logging", package: "swift-log"),
             .product(name: "FirebaseMessaging", package: "firebase-ios-sdk")
         ], path: "Sources/Notifications"),
+        .target(name: "IlluminateBackgroundProcess", dependencies: [
+            .product(name: "Logging", package: "swift-log")
+        ], path: "Sources/BackgroundProcess"),
         
         // ---
         
