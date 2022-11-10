@@ -1,5 +1,4 @@
-//
-//  PleinCoreTests.swift
+// CoreTests.swift
 //
 //
 //  Copyright © 2022 E-sites. All rights reserved.
@@ -106,7 +105,7 @@ private struct BananaFilterableStrategy: FilterStrategy {
 // MARK: - Tests
 // --------------------------------------------------------
 
-class PleinCodableTests: XCTestCase {
+class CodableTests: XCTestCase {
     func testUknownEnum() {
         do {
             let data = #"[ "apple", "banana", "pear" ]"#.data(using: .utf8)!

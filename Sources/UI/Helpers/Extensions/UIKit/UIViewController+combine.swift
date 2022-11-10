@@ -1,6 +1,5 @@
 //
 //  UIViewController+combine.swift
-//  Plein
 //
 //  Created by Thomas Roovers on 23/06/2022.
 //  Copyright © 2022 E-sites. All rights reserved.

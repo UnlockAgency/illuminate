@@ -1,6 +1,5 @@
 //
 //  NotificationService.swift
-//  Plein
 //
 //  Created by Bas van Kuijck on 19/09/2022.
 //  Copyright © 2022 E-sites. All rights reserved.

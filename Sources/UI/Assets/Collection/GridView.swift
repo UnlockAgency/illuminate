@@ -1,6 +1,5 @@
 //
 //  GridView.swift
-//  Plein
 //
 //  Created by Bas van Kuijck on 21/09/2022.
 //  Copyright © 2022 E-sites. All rights reserved.

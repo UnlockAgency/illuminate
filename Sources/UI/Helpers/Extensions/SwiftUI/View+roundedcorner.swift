@@ -1,6 +1,5 @@
 //
 //  View+extensions.swift
-//  Plein
 //
 //  Created by Thomas Roovers on 30/06/2022.
 //  Copyright © 2022 E-sites. All rights reserved.

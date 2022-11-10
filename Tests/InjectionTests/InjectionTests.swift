@@ -1,5 +1,4 @@
-//
-//  PleinCoreTests.swift
+// InjectionTests.swift
 //
 //
 //  Copyright © 2022 E-sites. All rights reserved.
@@ -15,48 +14,48 @@ import Swinject
 
 private class InjectedServiceMixed {
     let uid = UUID().uuidString
-    @Injected(resolver: PleinInjectedTests.resolver) var sub1: InjectedSubService
-    @LazyInjected(resolver: PleinInjectedTests.resolver, name: "lazy") var sub2: InjectedSubService
+    @Injected(resolver: InjectedTests.resolver) var sub1: InjectedSubService
+    @LazyInjected(resolver: InjectedTests.resolver, name: "lazy") var sub2: InjectedSubService
 }
 
 private class InjectedServiceLazy {
     let uid = UUID().uuidString
-    @LazyInjected(resolver: PleinInjectedTests.resolver, name: "lazy") var sub: InjectedSubService
+    @LazyInjected(resolver: InjectedTests.resolver, name: "lazy") var sub: InjectedSubService
 }
 
 private class InjectedServicePlain {
     let uid = UUID().uuidString
-    @Injected(resolver: PleinInjectedTests.resolver) var sub: InjectedSubService
+    @Injected(resolver: InjectedTests.resolver) var sub: InjectedSubService
 }
 
 private class InjectedSubService {
     let uid = UUID().uuidString
 }
 
-class PleinInjectedTests: XCTestCase {
+class InjectedTests: XCTestCase {
     static let resolver = Container()
     
     override func setUp() {
         super.setUp()
         let subService = InjectedSubService()
-        PleinInjectedTests.resolver.register(InjectedSubService.self) { _ in subService }
+        InjectedTests.resolver.register(InjectedSubService.self) { _ in subService }
         
         let serviceLazy = InjectedServiceLazy()
         let servicePlain = InjectedServicePlain()
-        PleinInjectedTests.resolver.register(InjectedServiceLazy.self) { _ in serviceLazy }
-        PleinInjectedTests.resolver.register(InjectedServicePlain.self) { _ in servicePlain }
+        InjectedTests.resolver.register(InjectedServiceLazy.self) { _ in serviceLazy }
+        InjectedTests.resolver.register(InjectedServicePlain.self) { _ in servicePlain }
         
         let serviceMixed1 = InjectedServiceMixed()
-        PleinInjectedTests.resolver.register(InjectedServiceMixed.self) { _ in serviceMixed1 }
+        InjectedTests.resolver.register(InjectedServiceMixed.self) { _ in serviceMixed1 }
         let serviceMixed2 = InjectedServiceMixed()
-        PleinInjectedTests.resolver.register(InjectedServiceMixed.self, name: "mixed2") { _ in serviceMixed2 }
+        InjectedTests.resolver.register(InjectedServiceMixed.self, name: "mixed2") { _ in serviceMixed2 }
         
-        PleinInjectedTests.resolver.register(InjectedSubService.self, name: "lazy") { _ in InjectedSubService() }
+        InjectedTests.resolver.register(InjectedSubService.self, name: "lazy") { _ in InjectedSubService() }
     }
     
     func testInjected() {
-        guard let service1a = PleinInjectedTests.resolver.resolve(InjectedServiceMixed.self),
-        let service1b = PleinInjectedTests.resolver.resolve(InjectedServiceMixed.self, name: "mixed2") else {
+        guard let service1a = InjectedTests.resolver.resolve(InjectedServiceMixed.self),
+        let service1b = InjectedTests.resolver.resolve(InjectedServiceMixed.self, name: "mixed2") else {
             XCTAssert(false, "No InjectedServiceMixed resolved")
             return
         }
@@ -68,7 +67,7 @@ class PleinInjectedTests: XCTestCase {
     
     func testLazyInjected() {
         // Calling this service should not result into a crash, since the subservice is LazyInjected
-        guard let service = PleinInjectedTests.resolver.resolve(InjectedServiceLazy.self) else {
+        guard let service = InjectedTests.resolver.resolve(InjectedServiceLazy.self) else {
             XCTAssert(false, "No InjectedService2 resolved")
             return
         }
@@ -77,8 +76,8 @@ class PleinInjectedTests: XCTestCase {
     }
     
     func testSameInjected() {
-        guard let serviceMixed = PleinInjectedTests.resolver.resolve(InjectedServiceMixed.self),
-              let servicePlain = PleinInjectedTests.resolver.resolve(InjectedServicePlain.self) else {
+        guard let serviceMixed = InjectedTests.resolver.resolve(InjectedServiceMixed.self),
+              let servicePlain = InjectedTests.resolver.resolve(InjectedServicePlain.self) else {
             XCTAssert(false, "No InjectedService1, InjectedService3 resolved")
             return
         }

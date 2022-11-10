@@ -1,17 +1,31 @@
 //
 //  Publisher+concurrency.swift
-//  
 //
-//  Created by Thomas Roovers on 07/10/2022.
+//  Created by Bas van Kuijck on 2022/06/23.
+//  Copyright © 2022 E-sites. All rights reserved.
 //
 
 import Foundation
 import Combine
 
-extension Publisher {
+public extension Publisher where Failure == Never {
+    /// This will transform any Publisher into a async/await coroutine
+    /// Combine -> async
+    func async() async -> Output {
+        await withCheckedContinuation { continuation in
+            var cancellable: AnyCancellable?
+            cancellable = sink { obj in
+                continuation.resume(returning: obj)
+                cancellable?.cancel()
+            }
+        }
+    }
+}
+
+public extension Publisher {
     /// This will transform any Publisher into a throwable async/await coroutine
     /// Combine -> async
-    public func async() async throws -> Output {
+    func async() async throws -> Output {
         switch await asyncResult() {
         case .failure(let error):
             throw error
@@ -25,7 +39,7 @@ extension Publisher {
     /// Combine -> async
     ///
     /// - Returns: `Result<Output, Failure>`
-    public func asyncResult() async -> Result<Output, Failure> {
+    func asyncResult() async -> Result<Output, Failure> {
         await withCheckedContinuation { continuation in
             var cancellable: AnyCancellable?
             
@@ -42,7 +56,7 @@ extension Publisher {
     
     /// Use a async coroutine in a combine publisher sequence, allowing it to throw errors
     /// async -> Combine
-    public func tryAsyncMap<T>(_ transform: @escaping (Output) async throws -> T) -> AnyPublisher<T, Swift.Error> {
+    func tryAsyncMap<T>(_ transform: @escaping (Output) async throws -> T) -> AnyPublisher<T, Swift.Error> {
         mapError { $0 as Swift.Error }
         .flatMap { value in
             Future { promise in
@@ -62,7 +76,7 @@ extension Publisher {
     
     /// Use a async coroutine in a combine publisher sequence
     /// async -> Combine
-    public func asyncMap<T>(_ transform: @escaping (Output) async -> T) -> AnyPublisher<T, Failure> {
+    func asyncMap<T>(_ transform: @escaping (Output) async -> T) -> AnyPublisher<T, Failure> {
         flatMap { value -> Future<T, Failure> in
             Future { promise in
                 Task {

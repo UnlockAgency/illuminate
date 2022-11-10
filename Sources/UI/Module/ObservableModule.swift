@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 import Dysprosium
 import Combine
-import IlluminateCombine
 import IlluminateFoundation
 
 public final class ObservableModule<T>: ObservableObject, DysprosiumCompatible, CustomDebugStringConvertible {
