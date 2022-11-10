@@ -33,6 +33,7 @@ let package = Package(
         .package(url: "https://github.com/siteline/SwiftUI-Introspect.git", .upToNextMajor(from: "0.1.3")),
         .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.4.4")),
         .package(url: "https://github.com/Swinject/Swinject.git", .upToNextMajor(from: "2.8.2")),
+        .package(url: "https://github.com/CombineCommunity/CombineExt.git", .upToNextMajor(from: "1.8.1")),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", .upToNextMajor(from: "4.2.2")),
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "8.0.0")),
     ],
@@ -45,14 +46,18 @@ let package = Package(
         .target(name: "IlluminateFoundation", dependencies: [], path: "Sources/Foundation"),
         .target(name: "IlluminateRouting", dependencies: [], path: "Sources/Routing"),
         .target(name: "IlluminateSecurity", dependencies: [], path: "Sources/Security"),
+        
+        // UI
         .target(name: "IlluminateUI_Helpers", dependencies: [
             .byName(name: "IlluminateFoundation"),
             .byName(name: "IlluminateCombine"),
+            .byName(name: "CombineExt"),
             .byName(name: "Dysprosium"),
             .product(name: "Introspect", package: "SwiftUI-Introspect")
         ], path: "Sources/UI/Helpers"),
         .target(name: "IlluminateUI_Assets", path: "Sources/UI/Assets"),
         .target(name: "IlluminateUI_Module", dependencies: [ "IlluminateUI_Assets" ], path: "Sources/UI/Module"),
+        
         .target(name: "IlluminateSupport", dependencies: [
             .product(name: "Logging", package: "swift-log")
         ], path: "Sources/Support"),
