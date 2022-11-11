@@ -29,7 +29,7 @@ public final class ObservableModule<T>: ObservableObject, DysprosiumCompatible, 
     }
     
     public func perform(_ task: @escaping () async throws -> T) {
-        Task {
+        Task { @MainActor in
             await perform(task)
         }
     }

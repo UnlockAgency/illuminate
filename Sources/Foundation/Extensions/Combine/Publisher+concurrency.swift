@@ -60,7 +60,7 @@ public extension Publisher {
         mapError { $0 as Swift.Error }
         .flatMap { value in
             Future { promise in
-                Task {
+                Task { @MainActor in
                     do {
                         let output = try await transform(value)
                         promise(.success(output))
@@ -79,7 +79,7 @@ public extension Publisher {
     func asyncMap<T>(_ transform: @escaping (Output) async -> T) -> AnyPublisher<T, Failure> {
         flatMap { value -> Future<T, Failure> in
             Future { promise in
-                Task {
+                Task { @MainActor in
                     let output = await transform(value)
                     promise(.success(output))
                 }
