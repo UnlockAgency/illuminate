@@ -16,17 +16,22 @@ import IlluminateUI_Helpers
 import UIKit
 #endif
 
-public protocol ModuledViewErrorStateable {
+public protocol ModuledViewErrorStateable: View {
     init(error: Error, onRetry: (() -> Void)?)
 }
 
-public protocol ModuledViewUpdateStateable {
+public protocol ModuledViewUpdateStateable: View {
+    init()
+}
+
+public protocol ModuledViewLoadingStateable: View {
     init()
 }
 
 public class ModuledViewSettings {
-    public static var errorStateType: ModuledViewErrorStateable.Type?
-    public static var updateStateType: ModuledViewUpdateStateable.Type?
+    public static var errorStateType: (any ModuledViewErrorStateable.Type)?
+    public static var updateStateType: (any ModuledViewUpdateStateable.Type)?
+    public static var loadingStateType: (any ModuledViewLoadingStateable.Type)?
 }
 
 public struct ModuledView<Result, Content: View>: View {
@@ -37,17 +42,20 @@ public struct ModuledView<Result, Content: View>: View {
     private let onReload: (() -> Void)?
     private let errorState: ((Error, (() -> Void)?) -> any View)?
     private let updateState: (() -> any View)?
+    private let loadingState: (() -> any View)?
     
     public init(
         _ module: ObservableModule<Result>,
         @ViewBuilder content: @escaping (Result) -> Content,
-        errorState: ((Error, (() -> Void)?) -> any View)? = nil,
+        loadingState: (() -> any View)? = nil,
         updateState: (() -> any View)? = nil,
+        errorState: ((Error, (() -> Void)?) -> any View)? = nil,
         onReload: (() -> Void)? = nil
     ) {
         self.module = module
         self.errorState = errorState
         self.updateState = updateState
+        self.loadingState = loadingState
         self.content = content
         self.onReload = onReload
     }
@@ -55,8 +63,7 @@ public struct ModuledView<Result, Content: View>: View {
     public var body: some View {
         if module.loadingState == .loading {
             ZStack {
-                Spinner()
-                    .frame(width: 24, height: 24)
+                loadingView() ?? AnyView(EmptyView())
             }
             .frame(maxWidth: .infinity)
             
@@ -85,8 +92,8 @@ public struct ModuledView<Result, Content: View>: View {
         if let errorView = errorState {
             return AnyView(errorView(error, onReload))
             
-        } else if let errorViewType = ModuledViewSettings.errorStateType, let errorView = errorViewType.init(error: error, onRetry: onReload) as? (any View) {
-            return AnyView(errorView)
+        } else if let errorViewType = ModuledViewSettings.errorStateType {
+            return AnyView(errorViewType.init(error: error, onRetry: onReload))
             
         } else {
             return nil
@@ -96,8 +103,18 @@ public struct ModuledView<Result, Content: View>: View {
     private func updatingView() -> AnyView? {
         if let updateView = updateState {
             return AnyView(updateView())
-        } else if let updateViewType = ModuledViewSettings.updateStateType, let updateView = updateViewType.init() as? (any View) {
-            return AnyView(updateView)
+        } else if let updateViewType = ModuledViewSettings.updateStateType {
+            return AnyView(updateViewType.init())
+        } else {
+            return nil
+        }
+    }
+    
+    private func loadingView() -> AnyView? {
+        if let loadView = loadingState {
+            return AnyView(loadView())
+        } else if let loadViewType = ModuledViewSettings.loadingStateType {
+            return AnyView(loadViewType.init())
         } else {
             return nil
         }
