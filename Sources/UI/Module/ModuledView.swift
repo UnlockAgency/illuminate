@@ -16,22 +16,13 @@ import IlluminateUI_Helpers
 import UIKit
 #endif
 
-public protocol ModuledViewErrorStateable: View {
-    init(error: Error, onRetry: (() -> Void)?)
-}
-
-public protocol ModuledViewUpdateStateable: View {
-    init()
-}
-
-public protocol ModuledViewLoadingStateable: View {
-    init()
-}
+public typealias ModuledViewSettingsErrorState = ((Error, (() -> Void)?) -> any View)
+public typealias ModuledViewSettingsLoadingState = (() -> any View)
 
 public class ModuledViewSettings {
-    public static var errorStateType: (any ModuledViewErrorStateable.Type)?
-    public static var updateStateType: (any ModuledViewUpdateStateable.Type)?
-    public static var loadingStateType: (any ModuledViewLoadingStateable.Type)?
+    public static var errorState: ModuledViewSettingsErrorState?
+    public static var updateState: ModuledViewSettingsLoadingState?
+    public static var loadingState: ModuledViewSettingsLoadingState?
 }
 
 public struct ModuledView<Result, Content: View>: View {
@@ -40,16 +31,16 @@ public struct ModuledView<Result, Content: View>: View {
 
     private let content: (Result) -> Content
     private let onReload: (() -> Void)?
-    private let errorState: ((Error, (() -> Void)?) -> any View)?
-    private let updateState: (() -> any View)?
-    private let loadingState: (() -> any View)?
+    private let errorState: ModuledViewSettingsErrorState?
+    private let updateState: ModuledViewSettingsLoadingState?
+    private let loadingState: ModuledViewSettingsLoadingState?
     
     public init(
         _ module: ObservableModule<Result>,
         @ViewBuilder content: @escaping (Result) -> Content,
-        loadingState: (() -> any View)? = nil,
-        updateState: (() -> any View)? = nil,
-        errorState: ((Error, (() -> Void)?) -> any View)? = nil,
+        loadingState: ModuledViewSettingsLoadingState? = ModuledViewSettings.loadingState,
+        updateState: ModuledViewSettingsLoadingState? = ModuledViewSettings.updateState,
+        errorState: ModuledViewSettingsErrorState? = ModuledViewSettings.errorState,
         onReload: (() -> Void)? = nil
     ) {
         self.module = module
@@ -92,9 +83,6 @@ public struct ModuledView<Result, Content: View>: View {
         if let errorView = errorState {
             return AnyView(errorView(error, onReload))
             
-        } else if let errorViewType = ModuledViewSettings.errorStateType {
-            return AnyView(errorViewType.init(error: error, onRetry: onReload))
-            
         } else {
             return nil
         }
@@ -103,8 +91,7 @@ public struct ModuledView<Result, Content: View>: View {
     private func updatingView() -> AnyView? {
         if let updateView = updateState {
             return AnyView(updateView())
-        } else if let updateViewType = ModuledViewSettings.updateStateType {
-            return AnyView(updateViewType.init())
+            
         } else {
             return nil
         }
@@ -113,8 +100,7 @@ public struct ModuledView<Result, Content: View>: View {
     private func loadingView() -> AnyView? {
         if let loadView = loadingState {
             return AnyView(loadView())
-        } else if let loadViewType = ModuledViewSettings.loadingStateType {
-            return AnyView(loadViewType.init())
+            
         } else {
             return nil
         }
@@ -127,7 +113,7 @@ public struct ModuledView<Result, Content: View>: View {
 #if !TESTING
 struct ModuleView_Previews: PreviewProvider {
     
-    private struct ErrorView: View, ModuledViewErrorStateable {
+    private struct ErrorView: View {
         let error: Error
         let onRetry: (() -> Void)?
         
@@ -146,12 +132,22 @@ struct ModuleView_Previews: PreviewProvider {
         }
     }
     
-    static var loadingModule: ObservableModule<String> {
-        ModuledViewSettings.errorStateType = ErrorView.self
-        return ObservableModule<String>(
+    static var loadingModule = ObservableModule<String>(
+        initialValue: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        loadingState: .loading
+    )
+    
+    static var errorModule: ObservableModule<String> {
+        ModuledViewSettings.errorState = { error, onReload in
+            ErrorView(error: error, onRetry: onReload)
+        }
+        
+        let module = ObservableModule<String>(
             initialValue: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
             loadingState: .loading
         )
+        module.error = NSError()
+        return module
     }
     
     static var updatingModule = ObservableModule<String>(
@@ -175,6 +171,10 @@ struct ModuleView_Previews: PreviewProvider {
                     .background(
                         Rectangle().fill(.blue)
                     )
+                }
+                
+                ModuledView(errorModule) { _ in
+                    
                 }
                 
                 ModuledView(notLoadingModule) { obj in
