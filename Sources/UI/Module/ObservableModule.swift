@@ -13,12 +13,6 @@ import IlluminateFoundation
 
 public final class ObservableModule<T>: ObservableObject, DysprosiumCompatible, CustomDebugStringConvertible {
     
-    public enum LoadingState {
-        case loading
-        case notLoading
-        case updating
-    }
-    
     @Published public var loadingState: LoadingState
     @Published public var result: T
     @Published public var error: Error?
