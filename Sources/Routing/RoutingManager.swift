@@ -14,20 +14,32 @@ import Combine
 
 open class RoutingManager: RoutingService {
     
-    private var allRouteTypes: [RouteType.Type] = []
+    private var allRouteTypes: [any Route.Type] = []
     
-    private let subject = PassthroughSubject<RouteType, Never>()
+    private let subject = PassthroughSubject<any Route, Never>()
     
     public init() {
         
     }
     
-    public func registerRoutes(_ routeTypes: [RouteType.Type]) {
+    public func registerRoutes(_ routeTypes: [any Route.Type]) {
         allRouteTypes.append(contentsOf: routeTypes)
     }
     
-    public func registerRoutes(_ routeTypes: RouteType.Type...) {
+    public func registerRoutes(_ routeTypes: any Route.Type...) {
         allRouteTypes.append(contentsOf: routeTypes)
+    }
+    
+    public func unregisterRoutes(_ routeTypes: [any Route.Type]) {
+        allRouteTypes.removeAll { routeType in
+            return routeTypes.contains { "\($0)" == "\(routeType)" }
+        }
+    }
+    
+    public func unregisterRoutes(_ routeTypes: any Route.Type...) {        
+        allRouteTypes.removeAll { routeType in
+            return routeTypes.contains { "\($0)" == "\(routeType)" }
+        }
     }
     
     public func valuePublisher<T: Route>(for type: T.Type) -> AnyPublisher<T.ValueType, Never> {
@@ -93,7 +105,7 @@ open class RoutingManager: RoutingService {
         if let url = routable as? URL {
             return handle(url: url)
             
-        } else if let routeType = routable as? RouteType {
+        } else if let routeType = routable as? any Route {
             subject.send(routeType)
             return true
         }

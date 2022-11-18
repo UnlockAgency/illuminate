@@ -89,11 +89,17 @@ let package = Package(
             .byName(name: "Nimble"),
             .byName(name: "IlluminateCodable")
         ], path: "Tests/CodableTests"),
+        
         .testTarget(name: "InjectionTests", dependencies: [
             .byName(name: "Nimble"),
             .byName(name: "Swinject"),
             .byName(name: "IlluminateInjection")
         ], path: "Tests/InjectionTests"),
+        
+        .testTarget(name: "RoutingTests", dependencies: [
+            .byName(name: "Nimble"),
+            .byName(name: "IlluminateRouting")
+        ], path: "Tests/RoutingTests"),
     ],
     swiftLanguageVersions: [ .v5 ]
 )

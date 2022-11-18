@@ -20,6 +20,12 @@ public protocol RoutingService: AnyObject {
     func handleNotification(response: UNNotificationResponse)
 #endif
     
+    func registerRoutes(_ routeTypes: [any Route.Type])
+    func registerRoutes(_ routeTypes: any Route.Type...)
+    
+    func unregisterRoutes(_ routeTypes: [any Route.Type])
+    func unregisterRoutes(_ routeTypes: any Route.Type...)
+    
     @available(*, message: "Use `valuePublisher(for:)` instead")
     func publisher<T: Route>(for type: T.Type) -> AnyPublisher<T.ValueType, Never>
     
