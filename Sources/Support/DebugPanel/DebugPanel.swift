@@ -31,7 +31,14 @@ private extension Bundle {
 
 private struct DebugRow: Equatable {
     let key: String
+    let showFull: Bool
     let value: ((@escaping (String?) -> Void) -> Void)
+    
+    init(key: String, showFull: Bool = false, value: @escaping (@escaping (String?) -> Void) -> Void) {
+        self.key = key
+        self.showFull = showFull
+        self.value = value
+    }
     
     static func == (lhs: DebugRow, rhs: DebugRow) -> Bool {
         return lhs.key == rhs.key
@@ -74,8 +81,8 @@ open class DebugPanel {
         ]
     }
     
-    public func add(key: String, value: @escaping (@escaping (String?) -> Void) -> Void) {
-        let row = DebugRow(key: key, value: value)
+    public func add(key: String, showFull: Bool = false, value: @escaping (@escaping (String?) -> Void) -> Void) {
+        let row = DebugRow(key: key, showFull: showFull, value: value)
         if let index = rows.firstIndex(where: { $0 == row }) {
             rows.remove(at: index)
             rows.insert(row, at: index)
@@ -84,8 +91,8 @@ open class DebugPanel {
         }
     }
     
-    public func add(key: String, value: String?) {
-        add(key: key) { $0(value) }
+    public func add(key: String, showFull: Bool = false, value: String?) {
+        add(key: key,showFull: showFull) { $0(value) }
     }
     
     public func addButton(title: String, action: @escaping (() -> Void)) {
@@ -279,7 +286,7 @@ private class DebugPanelRowView: UIView {
         row.value { [weak self, valueLabel] string in
             self?.rawValue = string
             let aString = string ?? ""
-            if aString.count > 64 || aString.contains("\n") {
+            if (self?.row.showFull == false) && (aString.count > 64 || aString.contains("\n")) {
                 valueLabel.text = "<data>"
             } else {
                 valueLabel.text = aString.isEmpty ? "(nil)" : aString
@@ -357,11 +364,11 @@ private class LargeTextViewController: UIViewController {
 open class DebugPanel {
     public static let instance = DebugPanel()
     
-    public func add(key: String, value: @escaping (@escaping (String?) -> Void) -> Void) {
+    public func add(key: String, showFull: Bool = false, value: @escaping (@escaping (String?) -> Void) -> Void) {
         
     }
     
-    public func add(key: String, value: String?) {
+    public func add(key: String, showFull: Bool = false, value: String?) {
         
     }
     
