@@ -261,9 +261,9 @@ private class DebugPanelRowView: UIView {
         setupValue()
     }
     
-    private func setCopyButtonText(value: String) {
+    private func setCopyButtonText(value: String, showFull: Bool) {
         copyButton.isHidden = value.isEmpty
-        if value.count > 64 {
+        if !showFull && value.count > 64 {
             copyButton.setTitle("View", for: .normal)
             copyButtonWidthConstraint?.constant = 64
             return
@@ -286,12 +286,13 @@ private class DebugPanelRowView: UIView {
         row.value { [weak self, valueLabel] string in
             self?.rawValue = string
             let aString = string ?? ""
-            if (self?.row.showFull == false) && (aString.count > 64 || aString.contains("\n")) {
+            let showFull = self?.row.showFull == true
+            if !showFull && (aString.count > 64 || aString.contains("\n")) {
                 valueLabel.text = "<data>"
             } else {
                 valueLabel.text = aString.isEmpty ? "(nil)" : aString
             }
-            self?.setCopyButtonText(value: aString)
+            self?.setCopyButtonText(value: aString, showFull: showFull)
             valueLabel.alpha = aString.isEmpty ? 0.5 : 1
         }
         
