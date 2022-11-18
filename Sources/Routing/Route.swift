@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol Route {
+public protocol Route: Routable {
     associatedtype ValueType
     
     var value: ValueType { get }
