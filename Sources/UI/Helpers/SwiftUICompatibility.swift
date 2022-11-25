@@ -19,7 +19,7 @@ public struct SwiftUICompatibilityFunction<V: View> {
     @ViewBuilder
     let closure: (V) -> any View
     
-    private init(@ViewBuilder closure: @escaping (V) -> any View) {
+    public init(@ViewBuilder closure: @escaping (V) -> any View) {
         self.closure = closure
     }
     
