@@ -83,6 +83,12 @@ open class RoutingManager: RoutingService {
         } else if let urlString = userInfo["url"] as? String,
                   let url = URL(string: urlString) {
             _ = handle(url)
+            
+        } else if let custom = userInfo["custom"] as? [String: Any],
+                  let customA = custom["a"] as? [String: Any],
+                  let urlString = customA["url"] as? String,
+                  let url = URL(string: urlString) {
+            _ = handle(url)
         }
     }
 #endif
