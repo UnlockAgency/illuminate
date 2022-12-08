@@ -70,6 +70,11 @@ public extension Coordinator {
             objc_setAssociatedObject(self, &navigationControllerKey, newValue, .OBJC_ASSOCIATION_ASSIGN)
         }
     }
+    
+    @MainActor
+    func start(coordinator: Coordinator) {
+        start(coordinator: coordinator, transition: .init())
+    }
 }
 
 public extension AnyPublisher where Output == Void, Failure == Never {

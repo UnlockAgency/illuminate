@@ -47,7 +47,7 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
     open func start() {
     }
 
-    open func start(coordinator: Coordinator, transition: Transition = .init()) {
+    open func start(coordinator: Coordinator, transition: Transition) {
         childCoordinators.add(coordinator as AnyObject)
         coordinator.transition = transition
         coordinator.parentCoordinator = self
@@ -64,14 +64,14 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
     /// Factory function
     ///
     /// - Parameters:
-    ///   - type: `T.Type`. The UIViewController class (e.g. NewsViewController.self)
-    ///   - viewModel: `T.ViewModelType` A ViewModel, defaults to `T.ViewModelType()` (a new ViewModel will be initialized)
+    ///   - type: `Controller.Type`. The UIViewController class (e.g. NewsViewController.self)
+    ///   - viewModel: `Controller.ViewModelType` A ViewModel, defaults to `Controller.ViewModelType()` (a new ViewModel will be initialized)
     ///
-    /// - Returns: `T`. A UIViewController conforming to `ViewModelControllable`
+    /// - Returns: `Controller`. A UIViewController conforming to `ViewModelControllable`
     @MainActor
     @discardableResult
-    open func displayViewController<T: ViewModelControllable>(type: T.Type, viewModel: T.ViewModelType = T.ViewModelType()) -> T where T: UIViewController {
-        let viewController = T(viewModel: viewModel)
+    open func displayViewController<Controller: ViewModelControllable>(type: Controller.Type, viewModel: Controller.ViewModelType = Controller.ViewModelType()) -> Controller where Controller: UIViewController {
+        let viewController = Controller(viewModel: viewModel)
 
         // We want to retain this coordinator during the ViewModel's lifetime
         objc_setAssociatedObject(viewModel, &coordinatorKey, self, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
@@ -84,19 +84,19 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
     /// Factory function
     ///
     /// - Parameters:
-    ///   - type: `T.Type`. The SwiftUI.View class (e.g. NewsContentView.self)
-    ///   - viewModel: `T.ViewModelType` A ViewModel, defaults to `T.ViewModelType()` (a new ViewModel will be initialized)
+    ///   - type: `ViewType.Type`. The SwiftUI.View class (e.g. NewsContentView.self)
+    ///   - viewModel: `ViewType.ViewModelType` A ViewModel, defaults to `ViewType.ViewModelType()` (a new ViewModel will be initialized)
     ///
-    /// - Returns: `UIHostingController<T>`. A `UIHostingController` where `T` conforms to `ViewModelControllable`
+    /// - Returns: `some UIHostingController<ViewType>`. A `UIHostingController` where `ViewType` conforms to `ViewModelControllable`
     ///
     @discardableResult
     @MainActor
-    open func displayHostingController<T: ViewModelControllable, V: View, Controller>(
-        type: T.Type,
-        viewModel: T.ViewModelType = T.ViewModelType(),
-        controller builder: (T) -> Controller
-    ) -> Controller where T: View, Controller: UIHostingController<V> {
-        let view = T(viewModel: viewModel)
+    open func displayHostingController<ViewType: ViewModelControllable>(
+        type: ViewType.Type,
+        viewModel: ViewType.ViewModelType = ViewType.ViewModelType(),
+        controller builder: (ViewType) -> some UIHostingController<ViewType>
+    ) -> some UIHostingController<ViewType> {
+        let view = ViewType(viewModel: viewModel)
         let controller = builder(view)
         
         // The coordinator is retained during the BaseHostingController's lifetime
@@ -107,6 +107,18 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
         show(viewController: controller)
         
         return controller
+    }
+    
+    @discardableResult
+    @MainActor
+    open func displayHostingController<ViewType: ViewModelControllable>(
+        type: ViewType.Type,
+        viewModel: ViewType.ViewModelType = ViewType.ViewModelType()
+    ) -> UIHostingController<ViewType> {
+        let view = ViewType(viewModel: viewModel)
+        return displayHostingController(type: type, viewModel: viewModel) { _ in
+            return UIHostingController(rootView: view)
+        }
     }
     
     private func show(viewController: UIViewController) {
