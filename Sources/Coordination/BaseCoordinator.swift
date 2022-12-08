@@ -109,18 +109,6 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
         return controller
     }
     
-    @discardableResult
-    @MainActor
-    open func displayHostingController<ViewType: ViewModelControllable>(
-        type: ViewType.Type,
-        viewModel: ViewType.ViewModelType = ViewType.ViewModelType()
-    ) -> UIHostingController<ViewType> {
-        let view = ViewType(viewModel: viewModel)
-        return displayHostingController(type: type, viewModel: viewModel) { _ in
-            return UIHostingController(rootView: view)
-        }
-    }
-    
     private func show(viewController: UIViewController) {
         switch transition.type {
         case .present(let settings):
