@@ -87,15 +87,15 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
     ///   - type: `ViewType.Type`. The SwiftUI.View class (e.g. NewsContentView.self)
     ///   - viewModel: `ViewType.ViewModelType` A ViewModel, defaults to `ViewType.ViewModelType()` (a new ViewModel will be initialized)
     ///
-    /// - Returns: `some UIHostingController<ViewType>`. A `UIHostingController` where `ViewType` conforms to `ViewModelControllable`
+    /// - Returns: A `UIHostingController<ViewType>`. A `UIHostingController` where `ViewType` conforms to `ViewModelControllable`
     ///
     @discardableResult
     @MainActor
-    open func displayHostingController<ViewType: ViewModelControllable>(
+    open func displayHostingController<ViewType, Controller>(
         type: ViewType.Type,
         viewModel: ViewType.ViewModelType = ViewType.ViewModelType(),
-        controller builder: (ViewType) -> some UIHostingController<ViewType>
-    ) -> some UIHostingController<ViewType> {
+        controller builder: (ViewType) -> Controller
+    ) -> Controller where ViewType: ViewModelControllable, Controller: UIHostingController<ViewType> {
         let view = ViewType(viewModel: viewModel)
         let controller = builder(view)
         
