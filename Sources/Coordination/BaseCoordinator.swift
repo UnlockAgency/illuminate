@@ -91,11 +91,11 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
     ///
     @discardableResult
     @MainActor
-    open func displayHostingController<T: ViewModelControllable, U: View>(
+    open func displayHostingController<T: ViewModelControllable, V: View, Controller>(
         type: T.Type,
         viewModel: T.ViewModelType = T.ViewModelType(),
-        controller builder: (T) -> UIHostingController<U>
-    ) -> UIHostingController<U> where T: View {
+        controller builder: (T) -> Controller
+    ) -> Controller where T: View, Controller: UIHostingController<V> {
         let view = T(viewModel: viewModel)
         let controller = builder(view)
         
