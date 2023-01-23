@@ -53,11 +53,13 @@ let package = Package(
             .byName(name: "Dysprosium"),
             .product(name: "Introspect", package: "SwiftUI-Introspect")
         ], path: "Sources/UI/Helpers"),
+        
         .target(name: "IlluminateUI_Assets",
-                dependencies: [
-                    .byName(name: "IlluminateFoundation")
-                ],
-                path: "Sources/UI/Assets"),
+            dependencies: [
+                .byName(name: "IlluminateFoundation"),
+                .product(name: "Introspect", package: "SwiftUI-Introspect")
+            ], path: "Sources/UI/Assets"),
+        
         .target(name: "IlluminateUI_Module", dependencies: [
             "IlluminateUI_Assets",
             "IlluminateFoundation"
