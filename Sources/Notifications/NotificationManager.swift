@@ -125,15 +125,23 @@ public class NotificationManager: NSObject, NotificationService {
             .eraseToAnyPublisher()
     }
     
+    /// Subscribes to a given topic and returns a publisher with the result of the subscription.
+    /// - Parameter topic: The topic to subscribe to.
+    /// - Returns: A publisher that emits a `Void` on success or a `NotificationError` on failure.
     public func subscribe(to topic: any NotificationTopicType) -> AnyPublisher<Void, NotificationError> {
+        // Logs that we are subscribing to the topic
         logger?.debug("Subscribing to topic '\(topic)' ...", metadata: [ "service": "notifications" ])
         return Future<Void, NotificationError> { [weak self] promise in
+            // Perform the actual subscription
             Messaging.messaging().subscribe(toTopic: topic.name) { error in
                 if let error {
+                    // Logs if the subscription failed
                     self?.logger?.error("Failed subscribing to topic '\(topic.name)': \(error)", metadata: [ "service": "notifications" ])
                     promise(.failure(NotificationError(error: error)))
                 } else {
+                    // Logs if the subscription was successful
                     self?.logger?.info("Subscribed to topic '\(topic.name)'", metadata: [ "service": "notifications" ])
+                    // Keep track of the topic we subscribed to
                     if self?.isSubscribed(topic: topic) == false {
                         self?.subscribedTopics.append(topic.name)
                     }
@@ -143,21 +151,30 @@ public class NotificationManager: NSObject, NotificationService {
         }.eraseToAnyPublisher()
     }
     
+    /// Unsubscribes from a given topic and returns a publisher with the result of the unsubscription.
+    /// - Parameter topic: The topic to unsubscribe from.
+    /// - Returns: A publisher that emits a `Void` on success or a `NotificationError` on failure.
     public func unsubscribe(to topic: any NotificationTopicType) -> AnyPublisher<Void, NotificationError> {
+        // Logs that we are unsubscribing from the topic
         logger?.debug("Unsubscribing from topic '\(topic)' ...", metadata: [ "service": "notifications" ])
         return Future<Void, NotificationError> { [weak self] promise in
+            // Perform the actual unsubscription
             Messaging.messaging().unsubscribe(fromTopic: topic.name) { error in
                 if let error {
+                    // Logs if the unsubscription failed
                     self?.logger?.error("Failed unsubscribing from topic '\(topic.name)': \(error)", metadata: [ "service": "notifications" ])
                     promise(.failure(NotificationError(error: error)))
                 } else {
+                    // Logs if the unsubscription was successful
                     self?.logger?.info("Unsubscribed from topic '\(topic.name)'", metadata: [ "service": "notifications" ])
+                    // Remove the topic from the list of subscribed topics
                     self?.subscribedTopics.removeAll { $0 == topic.name }
                     promise(.success(()))
                 }
             }
         }.eraseToAnyPublisher()
     }
+
 }
 
 extension NotificationManager: MessagingDelegate {

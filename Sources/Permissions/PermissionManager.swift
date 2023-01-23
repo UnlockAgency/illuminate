@@ -30,14 +30,22 @@ final public class PermissionManager: NSObject, PermissionService {
         super.init()
     }
     
+    /// Requests permission for a specific type, it stores the request in UserDefaults and then it returns a publisher that emits the status of the permission request.
+    /// - Parameter type: The type of permission to request.
+    /// - Returns: A publisher that emits the status of the permission request.
     public func requestPermission(for type: PermissionType) -> AnyPublisher<PermissionStatus, Never> {
+        // Store the permission request in UserDefaults
         UserDefaults.standard.set(true, forKey: userDefaultsKey(for: type))
+        // Get the current permission status
         return getPermission(for: type)
+            // Perform the following actions on the main thread
             .subscribe(on: DispatchQueue.main)
             .flatMap { [weak self] permission -> AnyPublisher<PermissionStatus, Never> in
                 guard let strongSelf = self, permission == .pending else {
+                    // If the permission is not pending, return it immediately
                     return Just(permission).eraseToAnyPublisher()
                 }
+                // Otherwise, make the request for permission
                 return strongSelf.makeRequestPermission(for: type)
             }.eraseToAnyPublisher()
     }
@@ -75,10 +83,14 @@ final public class PermissionManager: NSObject, PermissionService {
         return "has_requested_permission-\(type.rawValue)"
     }
     
+    /// Returns the current permission status for a specific type.
+    /// - Parameter type: The type of permission to check.
+    /// - Returns: A publisher that emits the current permission status.
     public func getPermission(for type: PermissionType) -> AnyPublisher<PermissionStatus, Never> {
         switch type {
         case .location:
             let permissionStatus: PermissionStatus
+            // Check the authorization status of the location manager
             switch locationManagerAuthorizationStatus {
             case .authorizedWhenInUse, .authorizedAlways:
                 permissionStatus = .granted
@@ -89,8 +101,10 @@ final public class PermissionManager: NSObject, PermissionService {
             }
             return Just(permissionStatus).eraseToAnyPublisher()
         case .notifications:
+            // Request the notification settings and return a Future with the result
             return Future<PermissionStatus, Never> { promise in
                 UNUserNotificationCenter.current().getNotificationSettings { settings in
+                    // Perform this task on the main thread
                     Task { @MainActor in
                         switch settings.authorizationStatus {
                         case .authorized, .provisional:

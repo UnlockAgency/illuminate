@@ -35,7 +35,7 @@ let package = Package(
         .package(url: "https://github.com/Swinject/Swinject.git", .upToNextMajor(from: "2.8.2")),
         .package(url: "https://github.com/CombineCommunity/CombineExt.git", .upToNextMajor(from: "1.8.1")),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", .upToNextMajor(from: "4.2.2")),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "8.0.0")),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.0.0")),
     ],
     targets: [
         .target(name: "IlluminateAuth", dependencies: [], path: "Sources/Auth"),
