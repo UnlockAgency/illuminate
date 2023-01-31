@@ -16,7 +16,7 @@ private extension Array {
     }
 }
 
-public struct GridView<Item: Hashable, Content: View>: View {
+public struct GridView<Item, Content: View>: View {
     private struct Chunk {
         let items: [Item]
     }
@@ -49,7 +49,7 @@ public struct GridView<Item: Hashable, Content: View>: View {
     
     private func itemsView(_ items: [Item]) -> some View {
         HStack(alignment: .top, spacing: spacing) {
-            ForEach(items, id: \.self) { item in
+            ForEach(Array(items.enumerated()), id: \.offset) { _, item in
                 builder(item)
             }
             
