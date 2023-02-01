@@ -44,13 +44,14 @@ public struct GridView<Item, Content: View>: View {
                 itemsView(chunk.items)
                     .fixedSize(horizontal: false, vertical: true)
             }
-        }
+        }.animation(nil)
     }
     
     private func itemsView(_ items: [Item]) -> some View {
         HStack(alignment: .top, spacing: spacing) {
             ForEach(Array(items.enumerated()), id: \.offset) { _, item in
                 builder(item)
+                    .animation(nil)
             }
             
             // Fill up the empty views, so that any preceeding cell views will not fill up the entire space
