@@ -18,6 +18,11 @@ private protocol OutwardProtocol {
 }
 
 @objc
+private protocol NonExistingBubble {
+    func doSomething()
+}
+
+@objc
 private protocol InwardProtocol {
     func doSomethingInward()
 }
@@ -87,7 +92,8 @@ class CoordinatorTests: XCTestCase {
         let subCoordinator = SubChild1Coordinator()
         child3Coordinator.start(coordinator: subCoordinator)
         
-        rootCoordinator.bubble(direction: .inward(halt: true), type: InwardProtocol.self, selector: #selector(InwardProtocol.doSomethingInward))
+        let result = rootCoordinator.bubble(direction: .inward(halt: true), type: InwardProtocol.self, selector: #selector(InwardProtocol.doSomethingInward))
+        expect(result) == true
         expect(child2Coordinator.didSomething) == true
         expect(subCoordinator.didSomething) == false
     }
@@ -107,8 +113,28 @@ class CoordinatorTests: XCTestCase {
         let subCoordinator = SubChild1Coordinator()
         child3Coordinator.start(coordinator: subCoordinator)
         
-        rootCoordinator.bubble(direction: .inward(halt: false), type: InwardProtocol.self, selector: #selector(InwardProtocol.doSomethingInward))
+        let result = rootCoordinator.bubble(direction: .inward(halt: false), type: InwardProtocol.self, selector: #selector(InwardProtocol.doSomethingInward))
+        expect(result) == true
         expect(child2Coordinator.didSomething) == true
         expect(subCoordinator.didSomething) == true
+    }
+    
+    @MainActor
+    func testNonExistingBubble() throws {
+        let rootCoordinator = Root1Coordinator()
+        let childCoordinator1 = Child1Coordinator()
+        rootCoordinator.start(coordinator: childCoordinator1)
+        
+        let child2Coordinator = Child2Coordinator()
+        rootCoordinator.start(coordinator: child2Coordinator)
+        
+        let child3Coordinator = Child3Coordinator()
+        rootCoordinator.start(coordinator: child3Coordinator)
+        
+        let subCoordinator = SubChild1Coordinator()
+        child3Coordinator.start(coordinator: subCoordinator)
+        
+        let result = rootCoordinator.bubble(direction: .inward(halt: false), type: NonExistingBubble.self, selector: #selector(NonExistingBubble.doSomething))
+        expect(result) == false
     }
 }

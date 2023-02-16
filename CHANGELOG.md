@@ -1,8 +1,12 @@
 # Illuminate changelog
 
+## v0.9.3
+
+- [Coordination] Bubbling result
+
 ## v0.9.2
 
-- [Coordindation] Added children and bubbling direction
+- [Coordination] Added children and bubbling direction
 
 ## v0.9.1
 

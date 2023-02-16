@@ -40,11 +40,15 @@ public extension Coordinator {
     ///   - type: `T.Type`. What kind of Listener (protocol) should the Coordinate inherit?
     ///   - handler: `((T) -> Void)` Call this handler on each of the bubbled Coordinates
 
-    func bubble<T>(direction: CoordinatorBubbleDirection = .outward, type: T.Type, handler: ((T) -> Void)) {
+    @discardableResult
+    func bubble<T>(direction: CoordinatorBubbleDirection = .outward, type: T.Type, handler: ((T) -> Void)) -> Bool {
+        var found = false
+        
         @discardableResult
         func perform(coordinator aCoordinator: Coordinator) -> Bool {
             if let listener = aCoordinator as? T {
                 handler(listener)
+                found = true
                 return true
             }
             return false
@@ -69,19 +73,22 @@ public extension Coordinator {
             }
             bubbleFunc(coordinator: self)
         }
+        return found
     }
 
-    func bubble<T>(direction: CoordinatorBubbleDirection = .outward, type: T.Type, selector: Selector) {
+    @discardableResult
+    func bubble<T>(direction: CoordinatorBubbleDirection = .outward, type: T.Type, selector: Selector) -> Bool {
+        var found = false
         @discardableResult
         func perform(coordinator aCoordinator: Coordinator) -> Bool {
             let anyObject = aCoordinator as AnyObject
             if anyObject is T, anyObject.responds(to: selector) {
                 _ = anyObject.perform(selector)
+                found = true
                 return true
             }
             return false
-        }
-        
+        }        
         
         switch direction {
         case .outward:
@@ -102,6 +109,8 @@ public extension Coordinator {
             }
             bubbleFunc(coordinator: self)
         }
+        
+        return found
     }
 }
 
