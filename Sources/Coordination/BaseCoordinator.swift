@@ -38,6 +38,12 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
     // We use AnyObject, because `Coordinator` is not a class, but a protocol
     // And we cannot (and will not) add @objc to the Coordinator protocol
     private(set) var childCoordinators = NSHashTable<AnyObject>(options: .weakMemory)
+    
+    public var children: [any Coordinator] {
+        return childCoordinators.allObjects
+            .compactMap { $0 as? (any Coordinator) }
+            .sorted { $0.positionIndex < $1.positionIndex }
+    }
 
     public weak var parentCoordinator: Coordinator?
 
@@ -48,6 +54,7 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
     }
 
     open func start(coordinator: Coordinator, transition: Transition) {
+        coordinator.positionIndex = childCoordinators.count
         childCoordinators.add(coordinator as AnyObject)
         coordinator.transition = transition
         coordinator.parentCoordinator = self

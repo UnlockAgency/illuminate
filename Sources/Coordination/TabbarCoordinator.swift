@@ -56,6 +56,7 @@ open class TabbarCoordinator: BaseCoordinator {
             cachedViewControllers.removeValue(forKey: index)
             return
         }
+        coordinator.positionIndex = childCoordinators.count
         childCoordinators.add(coordinator as AnyObject)
         coordinator.transition = Transition(type: .reset(backwards: animated), animated: animated)
         coordinator.parentCoordinator = self

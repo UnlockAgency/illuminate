@@ -126,34 +126,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "IlluminateUI"
-               BuildableName = "IlluminateUI"
-               BlueprintName = "IlluminateUI"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "IlluminateCombine"
-               BuildableName = "IlluminateCombine"
-               BlueprintName = "IlluminateCombine"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "IlluminateFoundation"
                BuildableName = "IlluminateFoundation"
                BlueprintName = "IlluminateFoundation"
@@ -307,6 +279,16 @@
                BlueprintIdentifier = "RoutingTests"
                BuildableName = "RoutingTests"
                BlueprintName = "RoutingTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CoordinatorTests"
+               BuildableName = "CoordinatorTests"
+               BlueprintName = "CoordinatorTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

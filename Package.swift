@@ -76,6 +76,7 @@ let package = Package(
             .byName(name: "IlluminateInjection"),
         ], path: "Sources/Keychain"),
         .target(name: "IlluminatePermissions", dependencies: [
+            .byName(name: "IlluminateFoundation"),
             .product(name: "Logging", package: "swift-log")
         ], path: "Sources/Permissions"),
         .target(name: "IlluminateNotifications", dependencies: [
@@ -106,6 +107,11 @@ let package = Package(
             .byName(name: "Nimble"),
             .byName(name: "IlluminateRouting")
         ], path: "Tests/RoutingTests"),
+        
+        .testTarget(name: "CoordinatorTests", dependencies: [
+            .byName(name: "Nimble"),
+            .byName(name: "IlluminateCoordination")
+        ], path: "Tests/CoordinatorTests"),
     ],
     swiftLanguageVersions: [ .v5 ]
 )

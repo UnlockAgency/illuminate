@@ -12,7 +12,8 @@ import Combine
 public protocol Coordinator: AnyObject {
     var navigationController: UINavigationController { get set }
     var parentCoordinator: Coordinator? { get set }
-    var transition: Transition { get set }    
+    var transition: Transition { get set }
+    var children: [any Coordinator] { get }
     static var navigationControllerType: UINavigationController.Type { get set }
 
     @MainActor
@@ -25,6 +26,18 @@ public protocol Coordinator: AnyObject {
 
 private var navigationControllerKey: UInt8 = 0
 private var transitionKey: UInt8 = 0
+private var indexKey: UInt8 = 0
+
+extension Coordinator {
+    var positionIndex: Int {
+        get {
+            return (objc_getAssociatedObject(self, &indexKey) as? Int) ?? 0
+        }
+        set {
+            objc_setAssociatedObject(self, &indexKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+}
 
 public extension Coordinator {
     

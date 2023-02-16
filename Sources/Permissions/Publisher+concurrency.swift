@@ -30,11 +30,3 @@ extension Publisher {
         .eraseToAnyPublisher()
     }
 }
-
-func withAsyncThrowingPublisher<Output>(_ closure: @escaping () async throws -> Output) -> AnyPublisher<Output, Swift.Error> {
-    Just(())
-        .setFailureType(to: Swift.Error.self)
-        .tryAsyncMap { _ -> Output in
-            try await closure()
-        }
-}

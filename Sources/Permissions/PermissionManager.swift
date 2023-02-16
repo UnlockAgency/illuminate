@@ -11,6 +11,7 @@ import Combine
 import UserNotifications
 import CoreLocation
 import Logging
+import IlluminateFoundation
 
 enum NotificationError: Error {
     case notGranted
