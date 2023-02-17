@@ -24,7 +24,11 @@ public class NotificationManager: NSObject, NotificationService {
     
     @UserDefault(key: "subscribed-topics2") private var subscribedTopics: [String] = []
     
-    @UserDefault(key: "fcm-token") public private(set) var fcmToken: FCMToken?
+    @UserDefault(key: "fcm-token") public private(set) var fcmToken: FCMToken? {
+        didSet {
+            DebugPanel.instance.add(key: "fcm-token", value: fcmToken)
+        }
+    }
     @UserDefault(key: "did-register-remote-fcm-token") private var didRegisterRemoteFcmToken: String?
     @UserDefault(key: "deviceToken") public private(set) var deviceToken: APNSDeviceToken? {
         didSet {
