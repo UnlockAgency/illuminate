@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.5
+
+- [UI] ObservableScrollView
+
 ## v0.9.4
 
 - [UI] ObservableScrollView

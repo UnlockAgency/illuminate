@@ -40,7 +40,7 @@ public struct ObservableScrollView<Content: View>: View {
         }
         .introspectScrollView { scrollView in
             scrollView.publisher(for: \.contentOffset)
-                .map { $0.y }
+                .map { axes == .horizontal ? $0.x : $0.y }
                 .subscribe(subject)
                 .store(in: &cancellables)
         }
