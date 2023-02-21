@@ -1,5 +1,14 @@
 # Illuminate changelog
 
+## v0.9.7
+
+- [UI] Added ZoomableScrollView
+- [UI] Added HorizontalPaginatedScrollView
+
+## v0.9.6
+
+- [UI] ObservableScrollView
+
 ## v0.9.5
 
 - [UI] ObservableScrollView
