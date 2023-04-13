@@ -7,42 +7,55 @@
 //
 
 import Foundation
-import Combine
 import SwiftUI
-import Introspect
+
+private struct OffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = .zero
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        // ...
+    }
+}
 
 /// A ScrollView wrapper that tracks scroll offset changes.
-/// An explicit Combine approach is setup here, because using a @Published / @Binding variable
 public struct ObservableScrollView<Content: View>: View {
+    private let coordinateSpaceName = "frameLayer"
+    
     let axes: Axis.Set
     let showsIndicators: Bool
-    let subject: CurrentValueSubject<CGFloat, Never>
+    @Binding var contentOffset: CGFloat
     let content: () -> Content
-    @State var cancellables: Set<AnyCancellable>
     
     public init(
         _ axes: Axis.Set = .vertical,
         showsIndicators: Bool = true,
-        subject: CurrentValueSubject<CGFloat, Never>,
-        cancellables: inout Set<AnyCancellable>,
+        offset: Binding<CGFloat>,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.axes = axes
         self.showsIndicators = showsIndicators
-        self.subject = subject
-        self.cancellables = cancellables
+        _contentOffset = offset
         self.content = content
     }
     
     public var body: some View {
-        ScrollView(axes, showsIndicators: showsIndicators) {
-            content()
+        ScrollView {
+            offsetReader
+            content().padding(.top, -8)
         }
-        .introspectScrollView { scrollView in
-            scrollView.publisher(for: \.contentOffset)
-                .map { axes == .horizontal ? $0.x : $0.y }
-                .subscribe(subject)
-                .store(in: &cancellables)
+        .coordinateSpace(name: coordinateSpaceName)
+        .onPreferenceChange(OffsetPreferenceKey.self) { newValue in
+            contentOffset = newValue
         }
+    }
+    
+    private var offsetReader: some View {
+        GeometryReader { proxy in
+            Color.clear
+                .preference(
+                    key: OffsetPreferenceKey.self,
+                    value: (axes == .vertical ? proxy.frame(in: .named(coordinateSpaceName)).minY : proxy.frame(in: .named(coordinateSpaceName)).minX)
+                )
+        }
+        .frame(height: 0)
     }
 }

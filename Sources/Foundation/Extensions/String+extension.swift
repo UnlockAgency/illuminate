@@ -24,6 +24,6 @@ public extension String {
     var firstUppercased: String { return prefix(1).uppercased() + dropFirst() }
     
     var strippedHTML: String {
-        return replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
+        return replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil).trimmingCharacters(in: .whitespaces)
     }
 }

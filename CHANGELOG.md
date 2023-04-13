@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.8
+
+- [UI] Updated ObservableScrollView
+
 ## v0.9.7
 
 - [UI] Added ZoomableScrollView

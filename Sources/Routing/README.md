@@ -13,7 +13,7 @@ import IlluminateRouting
 struct ProductDetailRoute: Route {
     let value: String
     
-    static func handle(url: URL) -> RouteType? {
+    static func handle(url: URL) -> ProductDetailRoute? {
         // Possible values:
         // - https://www.plein.nl/product/<id> | /product/</id>
         guard let path = getPath(from: url),
@@ -21,17 +21,15 @@ struct ProductDetailRoute: Route {
             return nil
         }
 		 
-		return url.lastPathComponent
+        return ProductDetailRoute(value: url.lastPathComponent)
     }
 }
 ```
-**AppCoordinator.swift**
+**AppCoordinator+di.swift**
 
 ```swift
 let routingManager = RoutingManager()
-routingManager.registerRoutes([
-	ProductDetailRoute.self
-])
+routingManager.registerRoutes([ProductDetailRoute.self])
 
 container.register(RoutingService.self) { _ in routingManager }
 
