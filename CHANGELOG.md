@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.9
+
+- [Injection] Synchronized injection
+
 ## v0.9.8
 
 - [UI] Updated ObservableScrollView

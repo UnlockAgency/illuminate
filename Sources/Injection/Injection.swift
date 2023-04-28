@@ -48,9 +48,15 @@ public struct LazyInjected<Service> {
             }
             if let service {
                 return service
+                
+            } else if let value = (resolver as? Container)?.synchronize().resolve(Service.self, name: name) {
+                service = value
+                return value
+                
             } else if let value = resolver.resolve(Service.self, name: name) {
                 service = value
                 return value
+                
             } else {
                 fatalError("Cannot resolve type '\(Service.self)' with name '\(name ?? "(nil)")'")
             }
@@ -86,9 +92,14 @@ public struct Injected<Service> {
     }
     
     public init(resolver: Resolver = InjectSettings.resolver, name: String? = nil) {
-        guard let value = resolver.resolve(Service.self, name: name) else {
+        if let value = (resolver as? Container)?.synchronize().resolve(Service.self, name: name) {
+            wrappedValue = value
+            
+        } else if let value = resolver.resolve(Service.self, name: name) {
+            wrappedValue = value
+            
+        } else {
             fatalError("Cannot resolve type '\(Service.self)' with name '\(name ?? "(nil)")'")
         }
-        wrappedValue = value
     }
 }
