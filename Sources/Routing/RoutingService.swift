@@ -53,13 +53,12 @@ public protocol RoutingService: AnyObject {
     func routePublisher<T: Route>(for type: T.Type) -> AnyPublisher<T, Never>
 }
 
-public extension RoutingService {
-    func handle(_ routable: Routable) -> (any Route)? {
+extension RoutingService {
+    public func handle(_ routable: Routable) -> (any Route)? {
         return handle(routable, dryRun: false)
     }
     
-    func handle(url: URL, dryRun: Bool) -> (any Route)? {
+    public func handle(url: URL) -> (any Route)? {
         return handle(url: url, dryRun: false)
     }
-    
 }
