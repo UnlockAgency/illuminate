@@ -13,8 +13,8 @@ import UserNotifications
 import Combine
 
 public protocol RoutingService: AnyObject {
-    func handle(_ routable: Routable) -> (any Route)?
-    func handle(url: URL) -> (any Route)?
+    func handle(_ routable: Routable, dryRun: Bool) -> (any Route)?
+    func handle(url: URL, dryRun: Bool) -> (any Route)?
 #if canImport(UIKit)
     func handle(launchOptions: [UIApplication.LaunchOptionsKey: Any]?)
     func handleNotification(response: UNNotificationResponse)
@@ -51,4 +51,15 @@ public protocol RoutingService: AnyObject {
     ///     }.store(in: &cancellables)
     /// ```
     func routePublisher<T: Route>(for type: T.Type) -> AnyPublisher<T, Never>
+}
+
+public extension RoutingService {
+    func handle(_ routable: Routable) -> (any Route)? {
+        return handle(routable, dryRun: false)
+    }
+    
+    func handle(url: URL, dryRun: Bool) -> (any Route)? {
+        return handle(url: url, dryRun: false)
+    }
+    
 }

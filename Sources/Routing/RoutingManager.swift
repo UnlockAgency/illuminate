@@ -93,11 +93,13 @@ open class RoutingManager: RoutingService {
     }
 #endif
     
-    public func handle(url: URL) -> (any Route)? {
+    public func handle(url: URL, dryRun: Bool) -> (any Route)? {
         for routeType in allRouteTypes {
             if let route = routeType.handle(url: url) {
-                DispatchQueue.main.async {
-                    self.subject.send(route)
+                if !dryRun {
+                    DispatchQueue.main.async {
+                        self.subject.send(route)
+                    }
                 }
                 return route
             }
@@ -105,12 +107,14 @@ open class RoutingManager: RoutingService {
         return nil
     }
     
-    open func handle(_ routable: Routable) -> (any Route)? {
+    open func handle(_ routable: Routable, dryRun: Bool) -> (any Route)? {
         if let url = routable as? URL {
-            return handle(url: url)
+            return handle(url: url, dryRun: dryRun)
             
         } else if let route = routable as? any Route {
-            subject.send(route)
+            if !dryRun {
+                subject.send(route)
+            }
             return route
         }
         return nil

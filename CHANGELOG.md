@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.11
+
+- [Routing] Dry run option
+
 ## v0.9.10
 
 - [Routing] Changed `handle` return type
