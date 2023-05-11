@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.10
+
+- [Routing] Changed `handle` return type
+
 ## v0.9.9
 
 - [Injection] Synchronized injection

@@ -67,6 +67,7 @@ extension CacheManager {
         return try JSONDecoder().decode(T.self, from: data)
     }
     
+#if canImport(UIKit)
     // MARK: - Read & write UIImage
     // ------------------------------
     
@@ -75,8 +76,7 @@ extension CacheManager {
         
         if let format = format, format == .png {
             data = image.pngData()
-        }
-        else {
+        } else {
             data = image.jpegData(compressionQuality: 0.9)
         }
         
@@ -87,40 +87,40 @@ extension CacheManager {
     
     /// Read image for key. Please use this method to write an image instead of `readObject(forKey:)`
     public func readImage(forKey key: String) -> UIImage? {
-        let data = readData(forKey: key)
-        if let data = data {
+        if let data = readData(forKey: key) {
             return UIImage(data: data, scale: 1.0)
         }
         
         return nil
     }
+#endif
     
     // MARK: - Read & write String
     // ------------------------------
     
     /// Write a string for key
     public func write(string: String, forKey key: String) throws {
-        try write(object: string as NSCoding, forKey: key)
+        try write(object: NSString(string: string), forKey: key)
     }
     
     /// Read a string for key
     public func readString(forKey key: String) -> String? {
-        return readObject(forKey: key) as? String
+        return readObject(ofType: NSString.self, forKey: key) as? String
     }
     
     // MARK: - Read & write NSCoding
     // ------------------------------
 
-    public func write(object: NSCoding, forKey key: String) throws {
+    public func write<T: NSCoding>(object: T, forKey key: String) throws {
         let data = try NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: true)
         write(data: data, forKey: key)
     }
     
-    public func readObject(forKey key: String) -> NSObject? {
+    public func readObject<T: NSCoding & NSObject>(ofType type: T.Type, forKey key: String) -> T? {
         let data = readData(forKey: key)
         
-        if let data = data {
-            return NSKeyedUnarchiver.unarchiveObject(with: data) as? NSObject
+        if let data = data, let object = try? NSKeyedUnarchiver.unarchivedObject(ofClass: type, from: data) {
+            return object
         }
         
         return nil

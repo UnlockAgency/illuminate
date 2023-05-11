@@ -13,8 +13,8 @@ import UserNotifications
 import Combine
 
 public protocol RoutingService: AnyObject {
-    func handle(_ routable: Routable) -> Bool
-    func handle(url: URL) -> Bool
+    func handle(_ routable: Routable) -> (any Route)?
+    func handle(url: URL) -> (any Route)?
 #if canImport(UIKit)
     func handle(launchOptions: [UIApplication.LaunchOptionsKey: Any]?)
     func handleNotification(response: UNNotificationResponse)

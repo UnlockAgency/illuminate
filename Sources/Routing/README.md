@@ -48,11 +48,11 @@ extension AppDelegate: UIApplicationDelegate {
             return false
         }
         logger.trace("Application open url \(url)", metadata: [ "service": "routing" ])
-        return routingService.handle(url: url)
+        return routingService.handle(url: url) != nil
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         logger.trace("Application open url \(url)", metadata: [ "service": "routing" ])
-        return routingService.handle(url: url)
+        return routingService.handle(url: url) != nil
     }
 ```

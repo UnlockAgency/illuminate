@@ -68,7 +68,7 @@ open class RoutingManager: RoutingService {
         }
         
         if let url = launchOptions[.url] as? URL {
-            handle(url)
+            _ = handle(url)
         }
     }
     
@@ -93,28 +93,26 @@ open class RoutingManager: RoutingService {
     }
 #endif
     
-    @discardableResult
-    public func handle(url: URL) -> Bool {
+    public func handle(url: URL) -> (any Route)? {
         for routeType in allRouteTypes {
             if let route = routeType.handle(url: url) {
                 DispatchQueue.main.async {
                     self.subject.send(route)
                 }
-                return true
+                return route
             }
         }
-        return false
+        return nil
     }
     
-    @discardableResult
-    open func handle(_ routable: Routable) -> Bool {
+    open func handle(_ routable: Routable) -> (any Route)? {
         if let url = routable as? URL {
             return handle(url: url)
             
-        } else if let routeType = routable as? any Route {
-            subject.send(routeType)
-            return true
+        } else if let route = routable as? any Route {
+            subject.send(route)
+            return route
         }
-        return false
+        return nil
     }
 }
