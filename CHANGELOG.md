@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.12
+
+- [Notifications] Register handler is optional
+
 ## v0.9.11
 
 - [Routing] Dry run option

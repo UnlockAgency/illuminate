@@ -94,14 +94,14 @@ public class NotificationManager: NSObject, NotificationService {
             return
         }
         
-        guard didRegisterRemoteFcmToken != fcmToken, let registerDeviceHandler else {
+        guard didRegisterRemoteFcmToken != fcmToken else {
             return
         }
         
         isRemoteRegistering = true
         Task { @MainActor in
             do {
-                try await registerDeviceHandler(fcmToken)
+                try await registerDeviceHandler?(fcmToken)
                 didRegisterRemoteFcmToken = fcmToken
                 logger?.debug("Registered device with remote, fcmToken '\(fcmToken)'", metadata: [ "service": "notifications" ])
             } catch {
