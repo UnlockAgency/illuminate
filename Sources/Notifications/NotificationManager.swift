@@ -51,6 +51,10 @@ public class NotificationManager: NSObject, NotificationService {
         
         setDeviceTokenDebug()
         
+        if Messaging.messaging().apnsToken == nil, let deviceTokenData = deviceToken?.hexadecimal {
+            setDeviceToken(deviceTokenData, error: nil)
+        }
+        
         Messaging.messaging().token { [weak self] token, error in
             if error == nil {
                 self?.fcmToken = token
@@ -78,21 +82,21 @@ public class NotificationManager: NSObject, NotificationService {
         return Just(fcmToken).setFailureType(to: NotificationError.self).eraseToAnyPublisher()
     }
     
-    public func setDeviceToken(_ deviceToken: Data?, error: Error?) {
-        if let data = deviceToken {
+    public func setDeviceToken(_ deviceTokenData: Data?, error: Error?) {
+        if let deviceTokenData {
             let type: MessagingAPNSTokenType
 #if DEBUG
             type = .sandbox
 #else
             type = .prod
 #endif
-            Messaging.messaging().setAPNSToken(data, type: type)
-            let deviceTokenString = data.reduce("", { $0 + String(format: "%02X", $1) })
+            Messaging.messaging().setAPNSToken(deviceTokenData, type: type)
+            let deviceTokenString = deviceTokenData.reduce("", { $0 + String(format: "%02X", $1) })
             logger?.info("Set DeviceToken '\(deviceTokenString)'", metadata: [ "service": "notifications" ])
-            self.deviceToken = deviceTokenString
+            deviceToken = deviceTokenString
         } else if let error = error {
             logger?.error("Set DeviceToken '(nil)': \(error)", metadata: [ "service": "notifications" ])
-            self.deviceToken = nil
+            deviceToken = nil
         }
     }
     
@@ -143,41 +147,12 @@ public class NotificationManager: NSObject, NotificationService {
     /// - Parameter topic: The topic to subscribe to.
     /// - Returns: A publisher that emits a `Void` on success or a `NotificationError` on failure.
     public func subscribe(to topic: any NotificationTopicType) -> AnyPublisher<Void, NotificationError> {
-        return subscribe(to: topic, retried: false)
-    }
-    
-    private func subscribe(to topic: any NotificationTopicType, retried: Bool) -> AnyPublisher<Void, NotificationError> {
         // Logs that we are subscribing to the topic
         logger?.debug("Subscribing to topic '\(topic)' ...", metadata: [ "service": "notifications" ])
         return Future<Void, NotificationError> { [weak self] promise in
-            guard let strongSelf = self else {
-                promise(.failure(NotificationError()))
-                return
-            }
             // Perform the actual subscription
             Messaging.messaging().subscribe(toTopic: topic.name) { error in
                 if let error {
-                    
-                    // Rescue 'No APNS token specified before fetching FCM Token' error
-                    if !retried, let nsError = error as NSError?, nsError.domain == "com.google.fcm", nsError.code == 505, let deviceTokenData = self?.deviceToken?.hexadecimal {
-                        self?.logger?.warning("Failed subscribing to topic '\(topic.name)': \(error). Retrying ...", metadata: [ "service": "notifications" ])
-                        
-                        self?.setDeviceToken(deviceTokenData, error: nil)
-                        
-                        strongSelf.subscribe(to: topic, retried: true)
-                            .sink { completion in
-                                switch completion {
-                                case .failure(let notificationError):
-                                    promise(.failure(notificationError))
-                                case .finished:
-                                    promise(.success(()))
-                                }
-                            } receiveValue: {
-                                
-                            }.store(in: &strongSelf.cancellables)
-                        return
-                    }
-                    
                     // Logs if the subscription failed
                     self?.logger?.error("Failed subscribing to topic '\(topic.name)': \(error)", metadata: [ "service": "notifications" ])
                     promise(.failure(NotificationError(error: error)))

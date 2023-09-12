@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.14
+
+- [Notifications] Missing APNS token
+
 ## v0.9.13
 
 - [Notifications] Missing APNS token fallback
