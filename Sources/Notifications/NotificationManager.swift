@@ -19,6 +19,8 @@ import IlluminateFoundation
 public class NotificationManager: NSObject, NotificationService {
     @LazyInjected fileprivate var routingService: RoutingService
     
+    private var cancellables = Set<AnyCancellable>()
+    
     public var logger: Logger?
     public var registerDeviceHandler: ((FCMToken) async throws -> Void)?
     
@@ -26,7 +28,7 @@ public class NotificationManager: NSObject, NotificationService {
     
     @UserDefault(key: "fcm-token") public private(set) var fcmToken: FCMToken? {
         didSet {
-            DebugPanel.instance.add(key: "fcm-token", value: fcmToken)
+            setDeviceTokenDebug()
         }
     }
     @UserDefault(key: "did-register-remote-fcm-token") private var didRegisterRemoteFcmToken: String?
@@ -48,12 +50,20 @@ public class NotificationManager: NSObject, NotificationService {
         }
         
         setDeviceTokenDebug()
+        
+        Messaging.messaging().token { [weak self] token, error in
+            if error == nil {
+                self?.fcmToken = token
+                DebugPanel.instance.add(key: "fcm-token", value: token)
+            }
+        }
     }
     
     // MARK: - Registration
     // --------------------------------------------------------
     
     private func setDeviceTokenDebug() {
+        DebugPanel.instance.add(key: "fcm-token", value: fcmToken)
         DebugPanel.instance.add(key: "APNS-token", value: deviceToken)
     }
     
@@ -69,7 +79,6 @@ public class NotificationManager: NSObject, NotificationService {
     }
     
     public func setDeviceToken(_ deviceToken: Data?, error: Error?) {
-        self.deviceToken = nil
         if let data = deviceToken {
             let type: MessagingAPNSTokenType
 #if DEBUG
@@ -83,6 +92,7 @@ public class NotificationManager: NSObject, NotificationService {
             self.deviceToken = deviceTokenString
         } else if let error = error {
             logger?.error("Set DeviceToken '(nil)': \(error)", metadata: [ "service": "notifications" ])
+            self.deviceToken = nil
         }
     }
     
@@ -133,12 +143,41 @@ public class NotificationManager: NSObject, NotificationService {
     /// - Parameter topic: The topic to subscribe to.
     /// - Returns: A publisher that emits a `Void` on success or a `NotificationError` on failure.
     public func subscribe(to topic: any NotificationTopicType) -> AnyPublisher<Void, NotificationError> {
+        return subscribe(to: topic, retried: false)
+    }
+    
+    private func subscribe(to topic: any NotificationTopicType, retried: Bool) -> AnyPublisher<Void, NotificationError> {
         // Logs that we are subscribing to the topic
         logger?.debug("Subscribing to topic '\(topic)' ...", metadata: [ "service": "notifications" ])
         return Future<Void, NotificationError> { [weak self] promise in
+            guard let strongSelf = self else {
+                promise(.failure(NotificationError()))
+                return
+            }
             // Perform the actual subscription
             Messaging.messaging().subscribe(toTopic: topic.name) { error in
                 if let error {
+                    
+                    // Rescue 'No APNS token specified before fetching FCM Token' error
+                    if !retried, let nsError = error as NSError?, nsError.domain == "com.google.fcm", nsError.code == 505, let deviceTokenData = self?.deviceToken?.hexadecimal {
+                        self?.logger?.warning("Failed subscribing to topic '\(topic.name)': \(error). Retrying ...", metadata: [ "service": "notifications" ])
+                        
+                        self?.setDeviceToken(deviceTokenData, error: nil)
+                        
+                        strongSelf.subscribe(to: topic, retried: true)
+                            .sink { completion in
+                                switch completion {
+                                case .failure(let notificationError):
+                                    promise(.failure(notificationError))
+                                case .finished:
+                                    promise(.success(()))
+                                }
+                            } receiveValue: {
+                                
+                            }.store(in: &strongSelf.cancellables)
+                        return
+                    }
+                    
                     // Logs if the subscription failed
                     self?.logger?.error("Failed subscribing to topic '\(topic.name)': \(error)", metadata: [ "service": "notifications" ])
                     promise(.failure(NotificationError(error: error)))
@@ -186,7 +225,6 @@ extension NotificationManager: MessagingDelegate {
         logger?.info("Did receive (new) FCM-token: '\(fcmToken.optionalDescription())'", metadata: [ "service": "notifications" ])
         
         if self.fcmToken != fcmToken {
-            DebugPanel.instance.add(key: "fcm-token", value: fcmToken)
             self.fcmToken = fcmToken
             requestRemoteRegistration()
         }

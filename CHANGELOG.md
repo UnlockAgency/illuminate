@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.13
+
+- [Notifications] Missing APNS token fallback
+
 ## v0.9.12
 
 - [Notifications] Register handler is optional
