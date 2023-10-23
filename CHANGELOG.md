@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.15
+
+- [UI-Assets] CompatibleAsyncImage receive on main queue
+
 ## v0.9.14
 
 - [Notifications] Missing APNS token

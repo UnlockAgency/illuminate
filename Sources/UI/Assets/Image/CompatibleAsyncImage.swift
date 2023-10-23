@@ -128,12 +128,11 @@ private class RemoteImageLoader: ObservableObject {
                 print("[CompatibleAsyncImage] Error loading remote image \(url): \(error)")
                 return Just(nil)
             }
-            .subscribe(on: RunLoop.main)
-            .use { [weak self] _ in
-                self?.loadingState = .notLoading
-            }
-            .sink { [weak self] image in
-                self?.image = image
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, image in
+                owner.image = image
+                owner.loadingState = .notLoading
             }
             .store(in: &cancellables)
     }
