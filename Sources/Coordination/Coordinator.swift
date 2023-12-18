@@ -41,6 +41,10 @@ extension Coordinator {
 
 public extension Coordinator {
     
+    var topCoordinator: Coordinator {
+        return children.last?.topCoordinator ?? self
+    }
+    
     var rootCoordinator: Coordinator {
         var coordinator: Coordinator = self
         while coordinator.parentCoordinator != nil {

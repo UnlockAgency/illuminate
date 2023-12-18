@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.16
+
+- [Injection] Thread safe containers
+
 ## v0.9.15
 
 - [UI-Assets] CompatibleAsyncImage receive on main queue

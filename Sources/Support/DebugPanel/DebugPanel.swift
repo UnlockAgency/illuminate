@@ -59,11 +59,13 @@ open class DebugPanel {
     public static let instance = DebugPanel()
     fileprivate var rows: [DebugRow] = []
     fileprivate var buttons: [DebugRowButton] = []
+    private var lock: UnsafeMutablePointer<os_unfair_lock>
     
     private weak var navigationController: UINavigationController?
     
     private init() {
-        
+        lock = UnsafeMutablePointer<os_unfair_lock>.allocate(capacity: 1)
+        lock.initialize(to: os_unfair_lock())
     }
     
     open func present(in viewController: UIViewController) {
@@ -82,6 +84,9 @@ open class DebugPanel {
     }
     
     public func add(key: String, showFull: Bool = false, value: @escaping (@escaping (String?) -> Void) -> Void) {
+        os_unfair_lock_lock(lock)
+        defer { os_unfair_lock_unlock(lock) }
+        
         let row = DebugRow(key: key, showFull: showFull, value: value)
         if let index = rows.firstIndex(where: { $0 == row }) {
             rows.remove(at: index)
