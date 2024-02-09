@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import AVFoundation
 import Combine
 import UserNotifications
 import CoreLocation
@@ -56,6 +57,12 @@ final public class PermissionManager: NSObject, PermissionService {
         let publisher: AnyPublisher<PermissionStatus, Never>
         
         switch type {
+        case .audio, .video:
+            publisher = Future<PermissionStatus, Never> { promise in
+                AVCaptureDevice.requestAccess(for: type == .video ? .video : .audio) { granted in
+                    promise(.success(granted ? .granted : .declined))
+                }
+            }.eraseToAnyPublisher()
         case .location:
             publisher = Future<PermissionStatus, Never> { [weak self] promise in
                 self?.requestLocationPromises.append(promise)
@@ -89,6 +96,17 @@ final public class PermissionManager: NSObject, PermissionService {
     /// - Returns: A publisher that emits the current permission status.
     public func getPermission(for type: PermissionType) -> AnyPublisher<PermissionStatus, Never> {
         switch type {
+        case .video, .audio:
+            let permissionStatus: PermissionStatus
+            switch AVCaptureDevice.authorizationStatus(for: type == .video ? .video : .audio) {
+            case .authorized:
+                permissionStatus = .granted
+            case .notDetermined:
+                permissionStatus = .pending
+            default:
+                permissionStatus = .declined
+            }
+            return Just(permissionStatus).eraseToAnyPublisher()
         case .location:
             let permissionStatus: PermissionStatus
             // Check the authorization status of the location manager
@@ -101,6 +119,7 @@ final public class PermissionManager: NSObject, PermissionService {
                 permissionStatus = .declined
             }
             return Just(permissionStatus).eraseToAnyPublisher()
+            
         case .notifications:
             // Request the notification settings and return a Future with the result
             return Future<PermissionStatus, Never> { promise in

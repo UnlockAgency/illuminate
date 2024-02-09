@@ -12,6 +12,8 @@ import Logging
 public enum PermissionType: String {
     case notifications
     case location
+    case video
+    case audio
 }
 
 public enum PermissionStatus: String {
