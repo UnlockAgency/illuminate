@@ -47,6 +47,12 @@ open class TabbarCoordinator: BaseCoordinator {
                 cachedViewControllers[activeIndex] = navigationController.viewControllers
             }
         }
+        // This will immediatelly reset the navigation stack
+        if reset {
+            cachedViewControllers.removeValue(forKey: index)
+        }
+        
+        // Should 'reset' means that the navigation stack will also be reset after changing tabs
         shouldReset = reset
         
         if let viewControllers = cachedViewControllers[index] {

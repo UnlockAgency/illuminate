@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.17
+
+- [Coordinate] Reset Tabbar coordinator upon opening
+
 ## v0.9.16
 
 - [Injection] Thread safe containers
