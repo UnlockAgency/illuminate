@@ -25,6 +25,7 @@ public struct ZoomableScrollView<Content: View>: UIViewRepresentable {
     public func makeUIView(context: Context) -> UIScrollView {
         // set up the UIScrollView
         let scrollView = UIScrollView()
+        scrollView.backgroundColor = .clear
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.delegate = context.coordinator
@@ -61,6 +62,7 @@ public struct ZoomableScrollView<Content: View>: UIViewRepresentable {
             self.hostingController = hostingController
             self.onZoom = onZoom
             hostingController.edgesForExtendedLayout = .all
+            hostingController.view.backgroundColor = .clear
             super.init()
             
             NotificationCenter.default.addObserver(self, selector: #selector(onResetZoomableScrollViewZoom), name: .onResetZoomableScrollViewZoom, object: nil)

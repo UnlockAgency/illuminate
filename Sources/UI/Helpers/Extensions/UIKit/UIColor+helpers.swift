@@ -71,4 +71,11 @@ public extension UIColor {
             return self
         }
     }
+    
+    var brightness: CGFloat {
+        var white: CGFloat = 0
+        var alpha: CGFloat = 0
+        getWhite(&white, alpha: &alpha)
+        return white
+    }
 }
