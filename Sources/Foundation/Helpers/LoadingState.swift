@@ -11,4 +11,8 @@ public enum LoadingState: String {
     case loading
     case notLoading
     case updating
+    
+    public var isBusy: Bool {
+        return self != .notLoading
+    }
 }
