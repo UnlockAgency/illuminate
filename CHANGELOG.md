@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.22
+
+- Swift 6 concurrency fixes
+
 ## v0.9.21
 
 - Swift 6 concurrency fixes
