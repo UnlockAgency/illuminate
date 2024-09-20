@@ -45,7 +45,7 @@ public class BackgroundProcessManager: BackgroundProcessService {
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
     }
     
-    public func registerBackgroundTask(identifier: String, interval: TimeInterval = 3600, handler: @escaping (@escaping (Error?) -> Void) -> Void) {
+    public func registerBackgroundTask(identifier: String, interval: TimeInterval = 3600, handler: @escaping @Sendable (@escaping @Sendable (Error?) -> Void) -> Void) {
         let newTask = Task(identifier: identifier, interval: interval)
         if tasks.contains(newTask) {
             logger.warning("Already registered background task with identifier '\(identifier)'", metadata: [ "service": "background" ])

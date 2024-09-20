@@ -32,7 +32,7 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
 
     public lazy var cancellables = Set<AnyCancellable>()
     
-    public static var navigationControllerType: UINavigationController.Type = UINavigationController.self
+    nonisolated(unsafe) public static var navigationControllerType: UINavigationController.Type = UINavigationController.self
 
     // Weak references to the coordinators
     // We use AnyObject, because `Coordinator` is not a class, but a protocol

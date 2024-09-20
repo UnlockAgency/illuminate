@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.9.20
+
+- Swift 6 concurrency fixes
+
 ## v0.9.19
 
 - [UI] Added some helpers
