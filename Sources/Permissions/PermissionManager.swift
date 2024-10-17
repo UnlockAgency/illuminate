@@ -35,8 +35,6 @@ final public class PermissionManager: NSObject, PermissionService, @unchecked Se
     /// Requests permission for a specific type, it stores the request in UserDefaults and then it returns a publisher that emits the status of the permission request.
     /// - Parameter type: The type of permission to request.
     /// - Returns: A publisher that emits the status of the permission request.
-    
-    @MainActor
     public func requestPermission(for type: PermissionType) -> AnyPublisher<PermissionStatus, Never> {
         // Store the permission request in UserDefaults
         UserDefaults.standard.set(true, forKey: userDefaultsKey(for: type))
@@ -54,7 +52,6 @@ final public class PermissionManager: NSObject, PermissionService, @unchecked Se
             }.eraseToAnyPublisher()
     }
     
-    @MainActor
     private func makeRequestPermission(for type: PermissionType) -> AnyPublisher<PermissionStatus, Never> {
         logger?.debug("Requesting permission for '\(type)' ...", metadata: [ "service": "permissions" ])
         let publisher: AnyPublisher<PermissionStatus, Never>
@@ -143,21 +140,20 @@ final public class PermissionManager: NSObject, PermissionService, @unchecked Se
         }
     }
     
-    @MainActor
     private func registerNotifications() -> AnyPublisher<Void, Error> {
         logger?.debug("Request remote nofications authorization", metadata: [ "service": "permissions" ])
-        UIApplication.shared.registerForRemoteNotifications()
         return withAsyncThrowingPublisher { [logger] in
-                let options = UNAuthorizationOptions([ .alert, .badge, .sound ])
-                let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: options)
-                if !granted {
-                    throw NotificationError.notGranted
-                }
-                logger?.info("Remote nofications authorization granted '\(granted)'", metadata: [ "service": "permissions" ])
+            UIApplication.shared.registerForRemoteNotifications()
+            let options = UNAuthorizationOptions([ .alert, .badge, .sound ])
+            let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: options)
+            if !granted {
+                throw NotificationError.notGranted
             }
-            .receive(on: DispatchQueue.main)
-            .subscribe(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
+            logger?.info("Remote nofications authorization granted '\(granted)'", metadata: [ "service": "permissions" ])
+        }
+        .receive(on: DispatchQueue.main)
+        .subscribe(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
     }
 }
 

@@ -53,42 +53,6 @@ public extension Publisher where Output: Sendable {
             }
         }
     }
-    
-    /// Use a async coroutine in a combine publisher sequence, allowing it to throw errors
-    /// async -> Combine
-    @MainActor
-    func tryAsyncMap<T: Sendable>(_ transform: @Sendable @escaping (Output) async throws -> T) -> AnyPublisher<T, Swift.Error> {
-        mapError { $0 as Swift.Error }
-        .flatMap { value in
-            Future { promise in
-                Task { @MainActor in
-                    do {
-                        let output = try await transform(value)
-                        promise(.success(output))
-                        
-                    } catch {
-                        promise(.failure(error))
-                    }
-                }
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    /// Use a async coroutine in a combine publisher sequence
-    /// async -> Combine
-    @MainActor
-    func asyncMap<T: Sendable>(_ transform: @escaping @Sendable (Output) async -> T) -> AnyPublisher<T, Failure> {
-        flatMap { value -> Future<T, Failure> in
-            Future { promise in
-                Task { @MainActor in
-                    let output = await transform(value)
-                    promise(.success(output))
-                }
-            }
-        }
-        .eraseToAnyPublisher()
-    }
 }
 
 /// Can be used to convert a async sequence to a Combine sequence
@@ -104,12 +68,19 @@ public extension Publisher where Output: Sendable {
 /// ```
 ///
 /// - Returns: `AnyPublisher<Output, Never>`
-@MainActor
-public func withAsyncPublisher<Output: Sendable>(_ closure: @escaping @Sendable () async -> Output) -> AnyPublisher<Output, Never> {
+public func withAsyncPublisher<Output: Sendable>(_ closure: @escaping @MainActor () async -> Output) -> AnyPublisher<Output, Never> {
+
     Just(())
-        .asyncMap { _ -> Output in
-            await closure()
+        .flatMap { _ in
+            return Future<Output, Never> { promise in
+                nonisolated(unsafe) let promise = promise
+                Task { @MainActor in
+                    let output = await closure()
+                    promise(.success(output))
+                }
+            }
         }
+        .eraseToAnyPublisher()
 }
 
 /// Can be used to convert a async sequence to a throwing Combine sequence
@@ -125,11 +96,22 @@ public func withAsyncPublisher<Output: Sendable>(_ closure: @escaping @Sendable 
 /// ```
 ///
 /// - Returns: `AnyPublisher<Output, Swift.Error>`
-@MainActor
-public func withAsyncThrowingPublisher<Output: Sendable>(_ closure: @escaping @Sendable () async throws -> Output) -> AnyPublisher<Output, Swift.Error> {
+public func withAsyncThrowingPublisher<Output: Sendable>(_ closure: @escaping @MainActor () async throws -> Output) -> AnyPublisher<Output, Swift.Error> {
+    
     Just(())
         .setFailureType(to: Swift.Error.self)
-        .tryAsyncMap { _ -> Output in
-            try await closure()
+        .flatMap { _ in
+            return Future<Output, Swift.Error> { promise in
+                nonisolated(unsafe) let promise = promise
+                Task { @MainActor in
+                    do {
+                        let output = try await closure()
+                        promise(.success(output))
+                    } catch {
+                        promise(.failure(error))
+                    }
+                }
+            }
         }
+        .eraseToAnyPublisher()
 }
