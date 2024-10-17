@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol UnknownableEnum: RawRepresentable {
+public protocol UnknownableEnum: RawRepresentable, Sendable {
     static var unknown: Self { get }
 }
 

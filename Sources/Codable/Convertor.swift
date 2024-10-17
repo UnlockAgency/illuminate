@@ -7,15 +7,15 @@
 
 import Foundation
 
-public enum ConvertorError: Swift.Error {
+public enum ConvertorError: Swift.Error, Sendable {
     case valueTypeMismatch
     case shouldAlwaysDecode
 }
 
-public protocol ConvertorValueProvider {
-    associatedtype ReturnType = Equatable & Codable
+public protocol ConvertorValueProvider: Sendable {
+    associatedtype ReturnType = Equatable & Codable & Sendable
     static var defaultValue: ReturnType { get }
-    associatedtype ValueType = Codable
+    associatedtype ValueType = Codable & Sendable
     static func decode(from value: ValueType) -> ReturnType
     static func encode(from value: ReturnType) -> ValueType
     static func shouldAlwaysDecode() -> Bool
@@ -28,7 +28,7 @@ public extension ConvertorValueProvider {
 }
 
 @propertyWrapper
-public struct CodableConvertor<Provider: ConvertorValueProvider>: Codable, CustomDebugStringConvertible where Provider.ReturnType: Codable, Provider.ValueType: Codable {
+public struct CodableConvertor<Provider: ConvertorValueProvider>: Codable, CustomDebugStringConvertible, Sendable where Provider.ReturnType: Codable & Sendable, Provider.ValueType: Codable & Sendable {
     public var wrappedValue: Provider.ReturnType
 
     public init() {

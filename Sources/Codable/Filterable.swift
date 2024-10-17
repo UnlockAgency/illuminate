@@ -11,12 +11,12 @@ public protocol Unknownable {
     var isUnknown: Bool { get }
 }
 
-public protocol FilterStrategy {
-    associatedtype Value: Codable
+public protocol FilterStrategy: Sendable {
+    associatedtype Value: Codable & Sendable
     static func filter(_ element: Value) -> Bool
 }
 
-public struct UnknownEnumFilterableStrategy<T>: FilterStrategy where T: UnknownableEnum & Codable, T.RawValue == String {
+public struct UnknownEnumFilterableStrategy<T>: FilterStrategy where T: UnknownableEnum & Codable & Sendable, T.RawValue == String {
     public static func filter(_ element: T) -> Bool {
         return element != T.unknown
     }
@@ -24,16 +24,16 @@ public struct UnknownEnumFilterableStrategy<T>: FilterStrategy where T: Unknowna
 
 public typealias UnknownEnumFilterable<T> = Filterable<UnknownEnumFilterableStrategy<T>> where T: UnknownableEnum & Codable, T.RawValue == String
 
-public struct UnknownFilterableStrategy<T>: FilterStrategy where T: Unknownable & Codable {
+public struct UnknownFilterableStrategy<T>: FilterStrategy where T: Unknownable & Codable & Sendable {
     public static func filter(_ element: T) -> Bool {
         return !element.isUnknown
     }
 }
 
-public typealias UnknownFilterable<T> = Filterable<UnknownFilterableStrategy<T>> where T: Unknownable & Codable
+public typealias UnknownFilterable<T> = Filterable<UnknownFilterableStrategy<T>> where T: Unknownable & Codable & Sendable
 
 @propertyWrapper
-public struct Filterable<Strategy: FilterStrategy>: Codable {
+public struct Filterable<Strategy: FilterStrategy>: Codable, Sendable {
     private(set) var value: [Strategy.Value]
     
     public var wrappedValue: [Strategy.Value] {
