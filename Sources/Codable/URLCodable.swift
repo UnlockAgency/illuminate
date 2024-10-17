@@ -4,6 +4,7 @@
 //
 //  Created by Bas van Kuijck on 17/10/2024.
 //
+import Foundation
 
 public extension KeyedDecodingContainer {
     func decode(_ type: URL.Type, forKey key: KeyedDecodingContainer<K>.Key) throws -> URL {
