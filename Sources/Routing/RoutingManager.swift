@@ -12,7 +12,7 @@ import UIKit
 #endif
 import Combine
 
-open class RoutingManager: RoutingService {
+open class RoutingManager: RoutingService, @unchecked Sendable {
     
     private var allRouteTypes: [any Route.Type] = []
     
@@ -97,8 +97,8 @@ open class RoutingManager: RoutingService {
         for routeType in allRouteTypes {
             if let route = routeType.handle(url: url) {
                 if !dryRun {
-                    DispatchQueue.main.async {
-                        self.subject.send(route)
+                    Task { @MainActor [weak self] in
+                        self?.subject.send(route)
                     }
                 }
                 return route

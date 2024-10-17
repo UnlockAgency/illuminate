@@ -18,9 +18,10 @@ public protocol NotificationService: AnyObject {
     var fcmToken: FCMToken? { get }
     var logger: Logger? { get set }
     
-    var registerDeviceHandler: ((FCMToken) async throws -> Void)? { get set }
+    var registerDeviceHandler: (@Sendable (FCMToken) async throws -> Void)? { get set }
     
     func setDeviceToken(_ deviceToken: Data?, error: Error?)
+    @MainActor
     func unregister() -> AnyPublisher<FCMToken?, NotificationError>
     
     func requestRemoteRegistration()

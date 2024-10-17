@@ -18,8 +18,8 @@ private extension String {
     }
 }
 
-open class DebugPanelLogHandler: LogHandler {
-    fileprivate(set) static var logLines: [String] = []
+open class DebugPanelLogHandler: LogHandler, @unchecked Sendable {
+    nonisolated(unsafe) fileprivate(set) static var logLines: [String] = []
     
     public init() {
         

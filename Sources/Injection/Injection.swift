@@ -22,7 +22,7 @@ private func memoize<T>(_ object: Any, key: UnsafeRawPointer, lazyCreateClosure:
     return instance
 }
 
-private var resolverKey: UInt8 = 0
+nonisolated(unsafe) private var resolverKey: UInt8 = 0
 
 public class InjectSettings {
     public static var resolver: Resolver {

@@ -46,6 +46,7 @@ extension SwiftUICompatibilityFunction {
         }
     }
     
+    @MainActor
     public static func scrollDismissesKeyboard(_ value: CompatibleScrollDismissesKeyboardMode) -> SwiftUICompatibilityFunction {
         return SwiftUICompatibilityFunction { view in
             if #available(iOS 16.0, *) {

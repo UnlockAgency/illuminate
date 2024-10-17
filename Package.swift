@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
     name: "Illuminate",
     platforms: [
-        .iOS(.v13)
+        .iOS(.v13),
+        .macOS(.v10_15)
     ],
     products: [
         .library(name: "IlluminateAuth", targets: ["IlluminateAuth"]),
@@ -33,7 +34,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.4.4")),
         .package(url: "https://github.com/e-sites/Einsteinium.git", .upToNextMajor(from: "1.3.0")),
         .package(url: "https://github.com/Swinject/Swinject.git", .upToNextMajor(from: "2.8.2")),
-        .package(url: "https://github.com/CombineCommunity/CombineExt.git", .upToNextMajor(from: "1.8.1")),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", .upToNextMajor(from: "4.2.2")),
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.0.0")),
     ],
@@ -49,7 +49,6 @@ let package = Package(
         // UI
         .target(name: "IlluminateUI_Helpers", dependencies: [
             .byName(name: "IlluminateFoundation"),
-            .byName(name: "CombineExt"),
             .byName(name: "Dysprosium"),
             .product(name: "Introspect", package: "SwiftUI-Introspect")
         ], path: "Sources/UI/Helpers"),
@@ -62,6 +61,7 @@ let package = Package(
         
         .target(name: "IlluminateUI_Module", dependencies: [
             "IlluminateUI_Assets",
+            "Dysprosium",
             "IlluminateFoundation"
         ], path: "Sources/UI/Module"),
         
@@ -113,5 +113,5 @@ let package = Package(
             .byName(name: "IlluminateCoordination")
         ], path: "Tests/CoordinatorTests"),
     ],
-    swiftLanguageVersions: [ .v5 ]
+    swiftLanguageModes: [ .v6 ]
 )

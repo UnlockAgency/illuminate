@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum LoadingState: String {
+public enum LoadingState: String, Sendable {
     case loading
     case notLoading
     case updating

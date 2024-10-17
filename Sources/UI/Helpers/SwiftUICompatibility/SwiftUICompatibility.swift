@@ -14,6 +14,7 @@ extension View {
     }
 }
 
+@MainActor
 public struct SwiftUICompatibilityFunction<V: View> {
     
     @ViewBuilder

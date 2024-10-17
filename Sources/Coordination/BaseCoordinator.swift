@@ -11,7 +11,7 @@ import UIKit
 import Combine
 import SwiftUI
 
-private var coordinatorKey: UInt8 = 0
+nonisolated(unsafe) private var coordinatorKey: UInt8 = 0
 
 private class BarButtonItem: UIBarButtonItem {
     private var actionHandler: (() -> Void)?
@@ -116,6 +116,7 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
         return controller
     }
     
+    @MainActor
     private func show(viewController: UIViewController) {
         switch transition.type {
         case .present(let settings):

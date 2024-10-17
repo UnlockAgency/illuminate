@@ -11,7 +11,7 @@ import UIKit
 
 public class CacheManager {
     
-    public static let instance = CacheManager()
+    nonisolated(unsafe) public static let instance = CacheManager()
     
     private let memoryCache = NSCache<AnyObject, AnyObject>()
     

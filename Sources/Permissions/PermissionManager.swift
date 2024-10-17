@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 import AVFoundation
-import Combine
+@preconcurrency import Combine
 import UserNotifications
 import CoreLocation
 import Logging
@@ -18,8 +18,8 @@ enum NotificationError: Error {
     case notGranted
 }
 
-final public class PermissionManager: NSObject, PermissionService {
-    public var logger: Logger?
+final public class PermissionManager: NSObject, PermissionService, @unchecked Sendable {
+    nonisolated(unsafe) public var logger: Logger?
     fileprivate var requestLocationPromises: [Future<PermissionStatus, Never>.Promise] = []
     
     lazy private var aLocationManager: CLLocationManager = {
@@ -35,6 +35,8 @@ final public class PermissionManager: NSObject, PermissionService {
     /// Requests permission for a specific type, it stores the request in UserDefaults and then it returns a publisher that emits the status of the permission request.
     /// - Parameter type: The type of permission to request.
     /// - Returns: A publisher that emits the status of the permission request.
+    
+    @MainActor
     public func requestPermission(for type: PermissionType) -> AnyPublisher<PermissionStatus, Never> {
         // Store the permission request in UserDefaults
         UserDefaults.standard.set(true, forKey: userDefaultsKey(for: type))
@@ -52,6 +54,7 @@ final public class PermissionManager: NSObject, PermissionService {
             }.eraseToAnyPublisher()
     }
     
+    @MainActor
     private func makeRequestPermission(for type: PermissionType) -> AnyPublisher<PermissionStatus, Never> {
         logger?.debug("Requesting permission for '\(type)' ...", metadata: [ "service": "permissions" ])
         let publisher: AnyPublisher<PermissionStatus, Never>
@@ -124,33 +127,33 @@ final public class PermissionManager: NSObject, PermissionService {
             // Request the notification settings and return a Future with the result
             return Future<PermissionStatus, Never> { promise in
                 UNUserNotificationCenter.current().getNotificationSettings { settings in
-                    // Perform this task on the main thread
-                    Task { @MainActor in
-                        switch settings.authorizationStatus {
-                        case .authorized, .provisional:
-                            promise(.success(.granted))
-                        case .notDetermined:
-                            promise(.success(.pending))
-                            return
-                        default:
-                            promise(.success(.declined))
-                        }
+                    switch settings.authorizationStatus {
+                    case .authorized, .provisional:
+                        promise(.success(.granted))
+                    case .notDetermined:
+                        promise(.success(.pending))
+                        return
+                    default:
+                        promise(.success(.declined))
                     }
                 }
-            }.eraseToAnyPublisher()
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
         }
     }
     
+    @MainActor
     private func registerNotifications() -> AnyPublisher<Void, Error> {
         logger?.debug("Request remote nofications authorization", metadata: [ "service": "permissions" ])
         UIApplication.shared.registerForRemoteNotifications()
-        return withAsyncThrowingPublisher { [weak self] in
+        return withAsyncThrowingPublisher { [logger] in
                 let options = UNAuthorizationOptions([ .alert, .badge, .sound ])
                 let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: options)
                 if !granted {
                     throw NotificationError.notGranted
                 }
-                self?.logger?.info("Remote nofications authorization granted '\(granted)'", metadata: [ "service": "permissions" ])
+                logger?.info("Remote nofications authorization granted '\(granted)'", metadata: [ "service": "permissions" ])
             }
             .receive(on: DispatchQueue.main)
             .subscribe(on: DispatchQueue.main)

@@ -16,13 +16,13 @@ import IlluminateSupport
 import IlluminateInjection
 import IlluminateFoundation
 
-public class NotificationManager: NSObject, NotificationService {
+public class NotificationManager: NSObject, NotificationService, @unchecked Sendable {
     @LazyInjected fileprivate var routingService: RoutingService
     
     private var cancellables = Set<AnyCancellable>()
     
     public var logger: Logger?
-    public var registerDeviceHandler: ((FCMToken) async throws -> Void)?
+    public var registerDeviceHandler: (@Sendable (FCMToken) async throws -> Void)?
     
     @UserDefault(key: "subscribed-topics2") private var subscribedTopics: [String] = []
     
@@ -71,6 +71,7 @@ public class NotificationManager: NSObject, NotificationService {
         DebugPanel.instance.add(key: "APNS-token", value: deviceToken)
     }
     
+    @MainActor
     public func unregister() -> AnyPublisher<FCMToken?, NotificationError> {
         logger?.info("Unregistering for remote notifications", metadata: [ "service": "notifications" ])
         defer {
@@ -102,13 +103,7 @@ public class NotificationManager: NSObject, NotificationService {
     
     @objc
     public func requestRemoteRegistration() {
-        guard let fcmToken = fcmToken,
-              !isRemoteRegistering
-        else {
-            return
-        }
-        
-        guard didRegisterRemoteFcmToken != fcmToken else {
+        guard let fcmToken, !isRemoteRegistering, didRegisterRemoteFcmToken != fcmToken else {
             return
         }
         

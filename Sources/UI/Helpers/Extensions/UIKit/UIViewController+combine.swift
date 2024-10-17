@@ -8,10 +8,9 @@
 import Foundation
 import UIKit
 import Combine
-import CombineExt
 import IlluminateFoundation
 
-private var publisherKey: UInt8 = 0
+nonisolated(unsafe) private var publisherKey: UInt8 = 0
 
 extension UIViewController {
     public var publishers: UIViewController.Publishers {
@@ -22,23 +21,23 @@ extension UIViewController {
     }
     
     public class Publishers {
-        private static var swizzled = false
+        nonisolated(unsafe) private static var swizzled = false
         
         fileprivate init() {
             
         }
         
-        public lazy var viewDidAppear = viewDidAppearRelay.eraseToAnyPublisher()
-        fileprivate let viewDidAppearRelay = PassthroughRelay<Bool>()
+        public lazy var viewDidAppear = viewDidAppearSubject.eraseToAnyPublisher()
+        fileprivate let viewDidAppearSubject = PassthroughSubject<Bool, Never>()
         
-        public lazy var viewWillAppear = viewWillAppearRelay.eraseToAnyPublisher()
-        fileprivate let viewWillAppearRelay = PassthroughRelay<Bool>()
+        public lazy var viewWillAppear = viewWillAppearSubject.eraseToAnyPublisher()
+        fileprivate let viewWillAppearSubject = PassthroughSubject<Bool, Never>()
         
-        public lazy var viewDidDisappear = viewDidDisappearRelay.eraseToAnyPublisher()
-        fileprivate let viewDidDisappearRelay = PassthroughRelay<Bool>()
+        public lazy var viewDidDisappear = viewDidDisappearSubject.eraseToAnyPublisher()
+        fileprivate let viewDidDisappearSubject = PassthroughSubject<Bool, Never>()
         
-        public lazy var viewWillDisappear = viewWillDisappearRelay.eraseToAnyPublisher()
-        fileprivate let viewWillDisappearRelay = PassthroughRelay<Bool>()
+        public lazy var viewWillDisappear = viewWillDisappearSubject.eraseToAnyPublisher()
+        fileprivate let viewWillDisappearSubject = PassthroughSubject<Bool, Never>()
         
         fileprivate static func swizzle() {
             if swizzled {
@@ -55,24 +54,24 @@ extension UIViewController {
     @objc
     fileprivate func swizzledViewDidAppear(_ animated: Bool) {
         swizzledViewDidAppear(animated)
-        publishers.viewDidAppearRelay.accept(animated)
+        publishers.viewDidAppearSubject.send(animated)
     }
     
     @objc
     fileprivate func swizzledViewWillAppear(_ animated: Bool) {
         swizzledViewWillAppear(animated)
-        publishers.viewWillAppearRelay.accept(animated)
+        publishers.viewWillAppearSubject.send(animated)
     }
     
     @objc
     fileprivate func swizzledViewDidDisappear(_ animated: Bool) {
         swizzledViewDidDisappear(animated)
-        publishers.viewDidDisappearRelay.accept(animated)
+        publishers.viewDidDisappearSubject.send(animated)
     }
     
     @objc
     fileprivate func swizzledViewWillDisappear(_ animated: Bool) {
         swizzledViewWillDisappear(animated)
-        publishers.viewWillDisappearRelay.accept(animated)
+        publishers.viewWillDisappearSubject.send(animated)
     }
 }

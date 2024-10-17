@@ -13,7 +13,7 @@ import UIKit
 #endif
 
 public class SecurityManager {
-    private static var hasSuccessfullyUnlockedInSession = false
+    nonisolated(unsafe) private static var hasSuccessfullyUnlockedInSession = false
     
     fileprivate lazy var context = LAContext()
     fileprivate lazy var defaultKeychainQuery: [String: Any] = {

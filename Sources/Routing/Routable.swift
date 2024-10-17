@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol Routable { }
+public protocol Routable: Sendable { }
 
 extension URL: Routable { }

@@ -21,7 +21,7 @@ public protocol ViewModelControllable {
     init(viewModel: ViewModelType)
 }
 
-private var viewModelControllableKey: UInt8 = 0
+nonisolated(unsafe) private var viewModelControllableKey: UInt8 = 0
 
 public extension ViewModelControllable {
     var viewModel: ViewModelType {

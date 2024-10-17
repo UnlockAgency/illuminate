@@ -10,6 +10,7 @@ import UIKit
 import Combine
 
 public protocol Coordinator: AnyObject {
+    @MainActor
     var navigationController: UINavigationController { get set }
     var parentCoordinator: Coordinator? { get set }
     var transition: Transition { get set }
@@ -24,9 +25,9 @@ public protocol Coordinator: AnyObject {
     func removeChildCoordinators()
 }
 
-private var navigationControllerKey: UInt8 = 0
-private var transitionKey: UInt8 = 0
-private var indexKey: UInt8 = 0
+nonisolated(unsafe) private var navigationControllerKey: UInt8 = 0
+nonisolated(unsafe) private var transitionKey: UInt8 = 0
+nonisolated(unsafe) private var indexKey: UInt8 = 0
 
 extension Coordinator {
     var positionIndex: Int {
@@ -67,6 +68,7 @@ public extension Coordinator {
         }
     }
 
+    @MainActor
     var navigationController: UINavigationController {
         get {
             if let navController = objc_getAssociatedObject(self, &navigationControllerKey) as? UINavigationController {

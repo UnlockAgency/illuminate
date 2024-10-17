@@ -14,7 +14,7 @@ private enum TimeoutValue<T> {
     case timeout
 }
 
-public extension Publisher where Failure == Never {
+public extension Publisher where Failure == Never, Output: Sendable {
     func mainSink(_ receivedValue: @escaping @MainActor (Output) -> Void) -> AnyCancellable {
         sink { value in
             Task { @MainActor in

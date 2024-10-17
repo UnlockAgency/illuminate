@@ -8,10 +8,10 @@
 import Foundation
 import SwiftUI
 import Dysprosium
-import Combine
+@preconcurrency import Combine
 import IlluminateFoundation
 
-public final class ObservableModule<T>: ObservableObject, DysprosiumCompatible, CustomDebugStringConvertible {
+public final class ObservableModule<T: Sendable>: ObservableObject, @unchecked Sendable, DysprosiumCompatible {
     
     @Published public var loadingState: LoadingState
     @Published public var result: T
@@ -22,23 +22,23 @@ public final class ObservableModule<T>: ObservableObject, DysprosiumCompatible, 
         self.loadingState = loadingState
     }
     
-    public func perform(_ task: @escaping () async throws -> T) {
+    public func perform(_ task: @escaping @Sendable () async throws -> T) {
         Task { @MainActor in
             await perform(task)
         }
     }
     
-    public func perform<P: Publisher>(_ task: P) where P.Output == T {
+    public func perform<P: Publisher>(_ task: P) where P.Output == T, P: Sendable {
         perform(task.async)
     }
     
-    public func perform<P: Publisher>(_ task: P) async where P.Output == T {
-        await perform {
+    public func perform<P: Publisher>(_ task: P) async where P.Output == T, P: Sendable {
+        await perform { @MainActor [task] in
             try await task.async()
         }
     }
     
-    public func perform(withLoadingState startLoadingState: LoadingState? = nil, _ task: @escaping () async throws -> T) async {
+    public func perform(withLoadingState startLoadingState: LoadingState? = nil, _ task: @escaping @Sendable () async throws -> T) async {
         setError(nil)
         
         if let startLoadingState {

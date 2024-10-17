@@ -11,7 +11,7 @@ import SwiftUI
 import Introspect
 
 public struct ScrollViewOffsetPreferenceKey: PreferenceKey {
-    public static var defaultValue = CGFloat.zero
+    nonisolated(unsafe) public static var defaultValue = CGFloat.zero
     
     public static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value += nextValue()

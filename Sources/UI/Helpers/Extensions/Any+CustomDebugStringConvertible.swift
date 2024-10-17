@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import WebKit
 
-extension UIApplication.State: CustomDebugStringConvertible {
+extension UIApplication.State: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .active:
@@ -25,7 +25,7 @@ extension UIApplication.State: CustomDebugStringConvertible {
     }
 }
 
-extension WKNavigationType: CustomDebugStringConvertible {
+extension WKNavigationType: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .backForward:
@@ -46,7 +46,7 @@ extension WKNavigationType: CustomDebugStringConvertible {
     }
 }
 
-extension UIUserInterfaceStyle: CustomDebugStringConvertible {
+extension UIUserInterfaceStyle: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .unspecified:

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import BackgroundTasks
+@preconcurrency import BackgroundTasks
 import Combine
 import UIKit
 import Logging
@@ -20,7 +20,7 @@ private struct Task: Equatable {
     }
 }
 
-public class BackgroundProcessManager: BackgroundProcessService {
+public class BackgroundProcessManager: BackgroundProcessService, @unchecked Sendable {
     private var cancellables = Set<AnyCancellable>()
     private var tasks: [Task] = []
     private let logger: Logger
@@ -54,15 +54,18 @@ public class BackgroundProcessManager: BackgroundProcessService {
         tasks.append(newTask)
         logger.debug("Registering background task with identifier '\(identifier)'", metadata: [ "service": "background" ])
         BGTaskScheduler.shared.register(forTaskWithIdentifier: identifier, using: nil) { [weak self] task in
+            guard let strongSelf = self else {
+                return
+            }
             task.expirationHandler = {
                 task.setTaskCompleted(success: false)
-                self?.submitBackgroundTask(task: newTask)
+                strongSelf.submitBackgroundTask(task: newTask)
             }
-            self?.logger.debug("Scheduled background task '\(identifier)'", metadata: [ "service": "background" ])
+            strongSelf.logger.debug("Scheduled background task '\(identifier)'", metadata: [ "service": "background" ])
             
             handler { error in
                 task.setTaskCompleted(success: error == nil)
-                self?.submitBackgroundTask(task: newTask)
+                strongSelf.submitBackgroundTask(task: newTask)
             }
         }
     }

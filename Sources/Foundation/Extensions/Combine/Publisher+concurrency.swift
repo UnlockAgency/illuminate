@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import Combine
+@preconcurrency import Combine
 
-public extension Publisher where Failure == Never {
+public extension Publisher where Failure == Never, Output: Sendable {
     /// This will transform any Publisher into a async/await coroutine
     /// Combine -> async
     func async() async -> Output {
@@ -22,7 +22,7 @@ public extension Publisher where Failure == Never {
     }
 }
 
-public extension Publisher {
+public extension Publisher where Output: Sendable {
     /// This will transform any Publisher into a throwable async/await coroutine
     /// Combine -> async
     func async() async throws -> Output {
@@ -56,7 +56,8 @@ public extension Publisher {
     
     /// Use a async coroutine in a combine publisher sequence, allowing it to throw errors
     /// async -> Combine
-    func tryAsyncMap<T>(_ transform: @escaping (Output) async throws -> T) -> AnyPublisher<T, Swift.Error> {
+    @MainActor
+    func tryAsyncMap<T: Sendable>(_ transform: @Sendable @escaping (Output) async throws -> T) -> AnyPublisher<T, Swift.Error> {
         mapError { $0 as Swift.Error }
         .flatMap { value in
             Future { promise in
@@ -76,7 +77,8 @@ public extension Publisher {
     
     /// Use a async coroutine in a combine publisher sequence
     /// async -> Combine
-    func asyncMap<T>(_ transform: @escaping (Output) async -> T) -> AnyPublisher<T, Failure> {
+    @MainActor
+    func asyncMap<T: Sendable>(_ transform: @escaping @Sendable (Output) async -> T) -> AnyPublisher<T, Failure> {
         flatMap { value -> Future<T, Failure> in
             Future { promise in
                 Task { @MainActor in
@@ -102,7 +104,8 @@ public extension Publisher {
 /// ```
 ///
 /// - Returns: `AnyPublisher<Output, Never>`
-public func withAsyncPublisher<Output>(_ closure: @escaping () async -> Output) -> AnyPublisher<Output, Never> {
+@MainActor
+public func withAsyncPublisher<Output: Sendable>(_ closure: @escaping @Sendable () async -> Output) -> AnyPublisher<Output, Never> {
     Just(())
         .asyncMap { _ -> Output in
             await closure()
@@ -122,7 +125,8 @@ public func withAsyncPublisher<Output>(_ closure: @escaping () async -> Output) 
 /// ```
 ///
 /// - Returns: `AnyPublisher<Output, Swift.Error>`
-public func withAsyncThrowingPublisher<Output>(_ closure: @escaping () async throws -> Output) -> AnyPublisher<Output, Swift.Error> {
+@MainActor
+public func withAsyncThrowingPublisher<Output: Sendable>(_ closure: @escaping @Sendable () async throws -> Output) -> AnyPublisher<Output, Swift.Error> {
     Just(())
         .setFailureType(to: Swift.Error.self)
         .tryAsyncMap { _ -> Output in

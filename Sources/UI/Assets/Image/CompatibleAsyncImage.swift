@@ -153,8 +153,7 @@ struct LegacyAsyncImage_Previews: PreviewProvider {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                 } else {
-                    Spinner()
-                        .frame(width: 24, height: 24)
+                    Text("Loading...")
                 }
             }.frame(width: 300, height: 100)
             

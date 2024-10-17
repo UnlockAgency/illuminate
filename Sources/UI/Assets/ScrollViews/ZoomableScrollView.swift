@@ -10,7 +10,7 @@ import SwiftUI
 import UIKit
 
 extension Notification.Name {
-    public static var onResetZoomableScrollViewZoom = Notification.Name("onResetZoomableScrollViewZoom")
+    nonisolated(unsafe) public static var onResetZoomableScrollViewZoom = Notification.Name("onResetZoomableScrollViewZoom")
 }
 
 public struct ZoomableScrollView<Content: View>: UIViewRepresentable {

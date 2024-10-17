@@ -56,7 +56,7 @@ private class DebugRowButton {
 }
 
 open class DebugPanel {
-    public static let instance = DebugPanel()
+    nonisolated(unsafe) public static let instance = DebugPanel()
     fileprivate var rows: [DebugRow] = []
     fileprivate var buttons: [DebugRowButton] = []
     private var lock: UnsafeMutablePointer<os_unfair_lock>
@@ -68,6 +68,7 @@ open class DebugPanel {
         lock.initialize(to: os_unfair_lock())
     }
     
+    @MainActor
     open func present(in viewController: UIViewController) {
         if self.navigationController != nil {
             return
@@ -104,6 +105,7 @@ open class DebugPanel {
         buttons.append(DebugRowButton(title: title, action: action))
     }
     
+    @MainActor
     public func dismiss() {
         navigationController?.dismiss(animated: true)
         navigationController = nil
