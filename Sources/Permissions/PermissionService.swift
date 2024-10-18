@@ -25,7 +25,6 @@ public enum PermissionStatus: String, Sendable {
 public protocol PermissionService: AnyObject {
     var logger: Logger? { get set }
     func hasRequestedPermission(for type: PermissionType) -> Bool
-    @MainActor
     func requestPermission(for type: PermissionType) -> AnyPublisher<PermissionStatus, Never>
     func getPermission(for type: PermissionType) -> AnyPublisher<PermissionStatus, Never>
 }

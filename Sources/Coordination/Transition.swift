@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Transition {
+public struct Transition: Sendable {
     public let type: TranstionType
     public let animated: Bool
 
@@ -17,7 +17,7 @@ public struct Transition {
     }
 }
 
-public enum TranstionType {
+public enum TranstionType: Sendable {
     // Simply push in the current Navigation Controller
     case push
 
@@ -33,7 +33,7 @@ public enum TranstionType {
     case none
 }
 
-public struct PresentSettings {
+public struct PresentSettings: Sendable {
     public let inNewNavigationController: Bool
     public let fullScreen: Bool
 

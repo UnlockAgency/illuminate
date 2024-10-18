@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Combine
+@preconcurrency import Combine
 import UIKit
 
 private enum TimeoutValue<T> {
@@ -27,7 +27,7 @@ public extension Publisher where Failure == Never, Output: Sendable {
 public extension Publisher {
     func withUnretained<Object: AnyObject>(_ obj: Object) -> AnyPublisher<(Object, Output), Failure> {
         flatMap { [weak obj] value -> AnyPublisher<(Object, Output), Failure> in
-            guard let obj = obj else {
+            guard let obj else {
                 return AnyPublisher<(Object, Output), Failure>.never()
             }
             return Just((obj, value)).setFailureType(to: Failure.self).eraseToAnyPublisher()
