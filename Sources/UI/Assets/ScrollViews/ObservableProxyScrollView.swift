@@ -45,7 +45,7 @@ public struct ObservableProxyScrollView<Content, Key>: View where Content: View,
     }
     
     public var body: some View {
-        ScrollView(axes, showsIndicators: showsIndicators) {
+        scrollView {
             ScrollViewReader { proxy in
                 content(proxy)
                     .background(GeometryReader { geo in
@@ -59,6 +59,26 @@ public struct ObservableProxyScrollView<Content, Key>: View where Content: View,
         .coordinateSpace(name: scrollSpace)
         .onPreferenceChange(Key.self) { value in
             scrollOffset = value
+        }
+    }
+    
+    @ViewBuilder
+    private func scrollView<T: View>(@ViewBuilder _ aContent: () -> T) -> some View {
+        if #available(iOS 18.0, *) {
+            ScrollView(axes, showsIndicators: showsIndicators) {
+                aContent()
+            }
+            .onScrollGeometryChange(for: CGFloat.self) {
+                $0.contentOffset.y
+            } action: { oldValue, newValue in
+                if newValue != oldValue {
+                    scrollOffset = -newValue
+                }
+            }
+        } else {
+            ScrollView(axes, showsIndicators: showsIndicators) {
+                aContent()
+            }
         }
     }
 }

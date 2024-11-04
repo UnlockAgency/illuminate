@@ -38,13 +38,26 @@ public struct ObservableScrollView<Content: View>: View {
     }
     
     public var body: some View {
-        ScrollView {
-            offsetReader
-            content().padding(.top, -8)
-        }
-        .coordinateSpace(name: coordinateSpaceName)
-        .onPreferenceChange(OffsetPreferenceKey.self) { newValue in
-            contentOffset = newValue
+        if #available(iOS 18.0, *) {
+            ScrollView(axes, showsIndicators: showsIndicators) {
+                content()
+            }
+            .onScrollGeometryChange(for: CGFloat.self) {
+                $0.contentOffset.y
+            } action: { oldValue, newValue in
+                if newValue != oldValue {
+                    contentOffset = -newValue
+                }
+            }
+        } else {
+            ScrollView {
+                offsetReader
+                content().padding(.top, -8)
+            }
+            .coordinateSpace(name: coordinateSpaceName)
+            .onPreferenceChange(OffsetPreferenceKey.self) { newValue in
+                contentOffset = newValue
+            }
         }
     }
     

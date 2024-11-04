@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.10.1
+
+- iOS18 ObservableScrollView
+
 ## v0.10.0
 
 - Swift 6 compatible

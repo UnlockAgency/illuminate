@@ -58,4 +58,13 @@ extension SwiftUICompatibilityFunction {
             }
         }
     }
+    
+    public static func geometryGroup() -> SwiftUICompatibilityFunction {
+        return SwiftUICompatibilityFunction { view in
+            if #available(iOS 17.0, *) {
+                return view.geometryGroup()
+            }
+            return view
+        }
+    }
 }
