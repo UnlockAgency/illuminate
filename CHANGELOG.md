@@ -1,6 +1,6 @@
 # Illuminate changelog
 
-## v0.10.1
+## v0.10.2
 
 - iOS18 ObservableScrollView
 
