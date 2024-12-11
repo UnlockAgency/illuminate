@@ -1,5 +1,9 @@
 # Illuminate changelog
 
+## v0.10.3
+
+- [Coordinator] BarButtonItem
+
 ## v0.10.2
 
 - iOS18 ObservableScrollView

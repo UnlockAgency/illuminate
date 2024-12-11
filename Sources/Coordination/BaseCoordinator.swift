@@ -13,13 +13,17 @@ import SwiftUI
 
 nonisolated(unsafe) private var coordinatorKey: UInt8 = 0
 
-private class BarButtonItem: UIBarButtonItem {
-    private var actionHandler: (() -> Void)?
+@MainActor
+public protocol CloseBarButtonItemable {
+    var actionHandler: (() -> Void)? { get set }
+}
 
-    convenience init(barButtonSystemItem: UIBarButtonItem.SystemItem, actionHandler: (() -> Void)?) {
+private class BarButtonItem: UIBarButtonItem, CloseBarButtonItemable {
+    fileprivate var actionHandler: (() -> Void)?
+
+    convenience init(barButtonSystemItem: UIBarButtonItem.SystemItem) {
         self.init(barButtonSystemItem: barButtonSystemItem, target: nil, action: #selector(BarButtonItem.barButtonItemPressed))
         target = self
-        self.actionHandler = actionHandler
     }
 
     @objc
@@ -33,6 +37,11 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
     public lazy var cancellables = Set<AnyCancellable>()
     
     nonisolated(unsafe) public static var navigationControllerType: UINavigationController.Type = UINavigationController.self
+    
+    @MainActor
+    public static var closeButtonBarItemBulder: () -> (UIBarButtonItem & CloseBarButtonItemable) = {
+        BarButtonItem(barButtonSystemItem: .close)
+    }
 
     // Weak references to the coordinators
     // We use AnyObject, because `Coordinator` is not a class, but a protocol
@@ -137,7 +146,8 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
             navigationController.present(newNavigationController, animated: animated)
             navigationController = newNavigationController
 
-            let item = BarButtonItem(barButtonSystemItem: .close) { [weak newNavigationController] in
+            var item = Self.closeButtonBarItemBulder()
+            item.actionHandler = { [weak newNavigationController] in
                 newNavigationController?.dismiss(animated: animated)
             }
             
