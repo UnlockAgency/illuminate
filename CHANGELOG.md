@@ -1,5 +1,8 @@
 # Illuminate changelog
 
+## v0.10.4
+- Swift's concurrency issues fix for FlowStack, ObservableProxyScrollView, ObservableScrollView
+
 ## v0.10.3
 
 - [Coordinator] BarButtonItem

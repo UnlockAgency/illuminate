@@ -91,7 +91,9 @@ private struct HeightReaderView: View {
                 .preference(key: HeightPreferenceKey.self, value: geo.frame(in: .local).size.height)
         }
         .onPreferenceChange(HeightPreferenceKey.self) { height in
-            binding = height
+            Task { @MainActor in
+                binding = height
+            }
         }
     }
 }

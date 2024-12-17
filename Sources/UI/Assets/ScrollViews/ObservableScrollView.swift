@@ -56,7 +56,9 @@ public struct ObservableScrollView<Content: View>: View {
             }
             .coordinateSpace(name: coordinateSpaceName)
             .onPreferenceChange(OffsetPreferenceKey.self) { newValue in
-                contentOffset = newValue
+                Task { @MainActor in
+                    contentOffset = newValue
+                }
             }
         }
     }

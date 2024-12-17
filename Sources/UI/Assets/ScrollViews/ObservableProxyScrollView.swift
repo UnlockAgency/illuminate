@@ -58,7 +58,9 @@ public struct ObservableProxyScrollView<Content, Key>: View where Content: View,
         .introspectScrollView { $0.isPagingEnabled = isPaginated }
         .coordinateSpace(name: scrollSpace)
         .onPreferenceChange(Key.self) { value in
-            scrollOffset = value
+            Task { @MainActor in
+                scrollOffset = value
+            }
         }
     }
     
