@@ -31,8 +31,9 @@ open class TabbarCoordinator: BaseCoordinator {
     ///   - coordinator: `Coordinator`
     ///   - index: `Int`
     ///   - reset: `Bool` (default: false). Set to true to always reset the navigation stack when the item is deselected
+    ///   - transition: `Transition` (optional)
     @MainActor
-    open func startTab(coordinator: Coordinator, at index: Int, reset: Bool = false) {
+    open func startTab(coordinator: Coordinator, at index: Int, reset: Bool = false, transition: Transition? = nil) {
         defer {
             activeIndex = index
         }
@@ -64,7 +65,7 @@ open class TabbarCoordinator: BaseCoordinator {
         }
         coordinator.positionIndex = childCoordinators.count
         childCoordinators.add(coordinator as AnyObject)
-        coordinator.transition = Transition(type: .reset(backwards: animated), animated: animated)
+        coordinator.transition = transition ?? Transition(type: .reset(backwards: animated), animated: animated)
         coordinator.parentCoordinator = self
         coordinator.start()
     }

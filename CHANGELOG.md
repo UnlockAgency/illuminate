@@ -1,5 +1,8 @@
 # Illuminate changelog
 
+## v0.10.5
+- [Coordinator] startTab transition
+
 ## v0.10.4
 - Swift's concurrency issues fix for FlowStack, ObservableProxyScrollView, ObservableScrollView
 
