@@ -169,9 +169,9 @@ open class BaseCoordinator: NSObject, Coordinator, DysprosiumCompatible {
                 navigationController.setViewControllers([ viewController ], animated: transition.animated)
             }
         case .custom(let value):
+            animators.setObject(value, forKey: viewController)
             navigationController.delegate = self
             navigationController.pushViewController(viewController, animated: transition.animated)
-            animators.setObject(value, forKey: viewController)
         case .none:
             break
         }
@@ -189,11 +189,11 @@ extension BaseCoordinator: UINavigationControllerDelegate {
         from fromVC: UIViewController,
         to toVC: UIViewController
     ) -> UIViewControllerAnimatedTransitioning? {
-        if operation == .push, var animator = animators.object(forKey: fromVC) as? UIViewControllerAnimatedTransitioning & CustomTransitionAnimator {
+        if operation == .push, var animator = animators.object(forKey: toVC) as? UIViewControllerAnimatedTransitioning & CustomTransitionAnimator {
             animator.isPushing = true
             return animator
             
-        } else if operation == .pop, var animator = animators.object(forKey: toVC) as? UIViewControllerAnimatedTransitioning & CustomTransitionAnimator {
+        } else if operation == .pop, var animator = animators.object(forKey: fromVC) as? UIViewControllerAnimatedTransitioning & CustomTransitionAnimator {
             animator.isPushing = false
             return animator
         }

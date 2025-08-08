@@ -1,6 +1,6 @@
 # Illuminate changelog
 
-## v0.10.7
+## v0.10.8
 - [Coordination] Custom transition
 
 ## v0.10.6
