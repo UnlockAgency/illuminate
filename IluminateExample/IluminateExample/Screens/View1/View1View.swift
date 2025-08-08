@@ -23,6 +23,7 @@ struct View1View: View, ViewModelControllable {
                 viewModel.onTap?(viewModel.title + " +", viewModel.color)
             } label: { Text(viewModel.title) }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(uiColor: viewModel.color))
         .environmentObject(viewModel)
     }

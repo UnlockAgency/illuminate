@@ -1,4 +1,5 @@
 {
+  "originHash" : "4f3f2b89543bf52aadd2d6d81393e80980f7003d5dc9eff495119d498bda6739",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -16,15 +17,6 @@
       "state" : {
         "revision" : "3e464dad87dad2d29bb29a97836789bf0f8f67d2",
         "version" : "10.18.1"
-      }
-    },
-    {
-      "identity" : "combineext",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/CombineCommunity/CombineExt.git",
-      "state" : {
-        "revision" : "d7b896fa9ca8b47fa7bcde6b43ef9b70bf8c1f56",
-        "version" : "1.8.1"
       }
     },
     {
@@ -199,5 +191,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

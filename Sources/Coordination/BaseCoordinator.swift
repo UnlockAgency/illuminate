@@ -20,20 +20,20 @@ public protocol CloseBarButtonItemable {
 
 private class BarButtonItem: UIBarButtonItem, CloseBarButtonItemable {
     fileprivate var actionHandler: (() -> Void)?
-
+    
     convenience init(barButtonSystemItem: UIBarButtonItem.SystemItem) {
         self.init(barButtonSystemItem: barButtonSystemItem, target: nil, action: #selector(BarButtonItem.barButtonItemPressed))
         target = self
     }
-
+    
     @objc
     private func barButtonItemPressed(sender: UIBarButtonItem) {
         actionHandler?()
     }
 }
 
-open class BaseCoordinator: Coordinator, DysprosiumCompatible {
-
+open class BaseCoordinator: NSObject, Coordinator, DysprosiumCompatible {
+    
     public lazy var cancellables = Set<AnyCancellable>()
     
     nonisolated(unsafe) public static var navigationControllerType: UINavigationController.Type = UINavigationController.self
@@ -42,26 +42,27 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
     public static var closeButtonBarItemBulder: () -> (UIBarButtonItem & CloseBarButtonItemable) = {
         BarButtonItem(barButtonSystemItem: .close)
     }
-
+    
     // Weak references to the coordinators
     // We use AnyObject, because `Coordinator` is not a class, but a protocol
     // And we cannot (and will not) add @objc to the Coordinator protocol
     private(set) var childCoordinators = NSHashTable<AnyObject>(options: .weakMemory)
+    private(set) var animators = NSMapTable<UIViewController, UIViewControllerAnimatedTransitioning>(keyOptions: .weakMemory, valueOptions: .strongMemory)
     
     public var children: [any Coordinator] {
         return childCoordinators.allObjects
             .compactMap { $0 as? (any Coordinator) }
             .sorted { $0.positionIndex < $1.positionIndex }
     }
-
+    
     public weak var parentCoordinator: Coordinator?
-
-    public init() {
+    
+    public override init() {
     }
-
+    
     open func start() {
     }
-
+    
     open func start(coordinator: Coordinator, transition: Transition) {
         coordinator.positionIndex = childCoordinators.count
         childCoordinators.add(coordinator as AnyObject)
@@ -69,14 +70,14 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
         coordinator.parentCoordinator = self
         coordinator.start()
     }
-
+    
     open func removeChildCoordinators() {
         childCoordinators.allObjects
             .compactMap { $0 as? Coordinator }
             .forEach { $0.removeChildCoordinators() }
         childCoordinators.removeAllObjects()
     }
-
+    
     /// Factory function
     ///
     /// - Parameters:
@@ -88,12 +89,12 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
     @discardableResult
     open func displayViewController<Controller: ViewModelControllable>(type: Controller.Type, viewModel: Controller.ViewModelType = Controller.ViewModelType()) -> Controller where Controller: UIViewController {
         let viewController = Controller(viewModel: viewModel)
-
+        
         // We want to retain this coordinator during the ViewModel's lifetime
         objc_setAssociatedObject(viewModel, &coordinatorKey, self, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-
+        
         show(viewController: viewController)
-
+        
         return viewController
     }
     
@@ -137,15 +138,15 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
                 navigationController.present(viewController, animated: animated)
                 return
             }
-
+            
             let newNavigationController = Self.navigationControllerType.init(rootViewController: viewController) // swiftlint:disable:this explicit_init
-
+            
             if settings.fullScreen {
                 newNavigationController.modalPresentationStyle = .fullScreen
             }
             navigationController.present(newNavigationController, animated: animated)
             navigationController = newNavigationController
-
+            
             var item = Self.closeButtonBarItemBulder()
             item.actionHandler = { [weak newNavigationController] in
                 newNavigationController?.dismiss(animated: animated)
@@ -156,7 +157,7 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
             }
         case .push:
             navigationController.pushViewController(viewController, animated: transition.animated)
-
+            
         case .reset(let backwards):
             // Reset the parentCoordinator, since we're breaking up the navigation stack
             parentCoordinator = rootCoordinator
@@ -167,13 +168,36 @@ open class BaseCoordinator: Coordinator, DysprosiumCompatible {
             } else {
                 navigationController.setViewControllers([ viewController ], animated: transition.animated)
             }
-
+        case .custom(let value):
+            navigationController.delegate = self
+            navigationController.pushViewController(viewController, animated: transition.animated)
+            animators.setObject(value, forKey: viewController)
         case .none:
             break
         }
     }
-
+    
     deinit {
         deallocated()
+    }
+}
+
+extension BaseCoordinator: UINavigationControllerDelegate {
+    public func navigationController(
+        _ navigationController: UINavigationController,
+        animationControllerFor operation: UINavigationController.Operation,
+        from fromVC: UIViewController,
+        to toVC: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
+        if operation == .push, var animator = animators.object(forKey: fromVC) as? UIViewControllerAnimatedTransitioning & CustomTransitionAnimator {
+            animator.isPushing = true
+            return animator
+            
+        } else if operation == .pop, var animator = animators.object(forKey: toVC) as? UIViewControllerAnimatedTransitioning & CustomTransitionAnimator {
+            animator.isPushing = false
+            return animator
+        }
+        
+        return nil
     }
 }

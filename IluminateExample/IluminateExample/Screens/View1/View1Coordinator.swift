@@ -30,7 +30,14 @@ public class View1Coordinator: BaseCoordinator {
         }
         
         viewModel.onTap = { [weak self] newTitle, newColor in
-            self?.start(coordinator: View1Coordinator(title: newTitle, color: newColor))
+            var color = newColor
+            if newTitle == "Twee + +" {
+                color = .systemPink
+            }
+            self?.start(
+                coordinator: View1Coordinator(title: newTitle, color: color),
+                transition: Transition(type: newTitle == "Twee +" ? .custom(animator: VerticalCustomPushAnimator()) : .push)
+            )
         }
         controller.title = title
     }

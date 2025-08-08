@@ -8,6 +8,10 @@
 import Foundation
 @preconcurrency import Combine
 
+public enum AsyncContinuationError: Error {
+    case finishedWithoutValue
+}
+
 public extension Publisher where Failure == Never, Output: Sendable {
     /// This will transform any Publisher into a async/await coroutine
     /// Combine -> async
@@ -22,15 +26,31 @@ public extension Publisher where Failure == Never, Output: Sendable {
     }
 }
 
+@available(iOS 15.0, *)
+public extension Publisher {
+    var first: Output {
+        get async throws {
+            for try await value in values {
+                return value
+            }
+            throw AsyncContinuationError.finishedWithoutValue
+        }
+    }
+}
+
 public extension Publisher where Output: Sendable {
     /// This will transform any Publisher into a throwable async/await coroutine
     /// Combine -> async
     func async() async throws -> Output {
-        switch await asyncResult() {
-        case .failure(let error):
-            throw error
-        case .success(let value):
-            return value
+        if #available(iOS 15.0, *) {
+            return try await first
+        } else {
+            switch await asyncResult() {
+            case .failure(let error):
+                throw error
+            case .success(let value):
+                return value
+            }
         }
     }
     

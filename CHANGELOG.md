@@ -1,5 +1,11 @@
 # Illuminate changelog
 
+## v0.10.7
+- [Coordination] Custom transition
+
+## v0.10.6
+- [Foundation] Improved `async` (and added `first`)
+
 ## v0.10.5
 - [Coordinator] startTab transition
 

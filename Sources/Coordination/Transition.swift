@@ -1,4 +1,4 @@
-//
+ //
 //  Transition.swift
 //
 //
@@ -6,6 +6,7 @@
 //
 
 import Foundation
+@preconcurrency import UIKit
 
 public struct Transition: Sendable {
     public let type: TranstionType
@@ -28,6 +29,9 @@ public enum TranstionType: Sendable {
     // Present the ViewController
     // true = Present with a new UINavigationController (defaults to `false`)
     case present(_ presentSettings: PresentSettings = .init())
+    
+    // A  custom transition animation
+    case custom(animator: CustomTransitionAnimator & UIViewControllerAnimatedTransitioning)
 
     // Do nothing
     case none
@@ -40,5 +44,22 @@ public struct PresentSettings: Sendable {
     public init(inNewNavigationController: Bool = true, fullScreen: Bool = false) {
         self.inNewNavigationController = inNewNavigationController
         self.fullScreen = fullScreen
+    }
+}
+
+public protocol CustomTransitionAnimator: Sendable {
+    
+}
+
+nonisolated(unsafe) private var customTransitionAnimatorKey: UInt8 = 0
+
+public extension CustomTransitionAnimator {
+    var isPushing: Bool {
+        get {
+            return objc_getAssociatedObject(self, &customTransitionAnimatorKey) as? Bool == true
+        }
+        set {
+            objc_setAssociatedObject(self, &customTransitionAnimatorKey, newValue, .OBJC_ASSOCIATION_ASSIGN)
+        }
     }
 }
