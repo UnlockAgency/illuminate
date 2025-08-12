@@ -1,7 +1,7 @@
 # Illuminate changelog
 
-## v0.10.8
-- [Coordination] Custom transition
+## v0.10.9
+- [Coordination] Custom vertical transition
 
 ## v0.10.6
 - [Foundation] Improved `async` (and added `first`)

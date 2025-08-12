@@ -33,7 +33,7 @@ public class View1Coordinator: BaseCoordinator {
             let verticalTransition = newTitle == "Twee + +"
             var color = newColor
             if verticalTransition {
-                color = .systemPink
+                color = .systemPink 
             }
             self?.start(
                 coordinator: View1Coordinator(title: newTitle, color: color),
