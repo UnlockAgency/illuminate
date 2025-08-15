@@ -30,7 +30,7 @@ public class View1Coordinator: BaseCoordinator {
         }
         
         viewModel.onTap = { [weak self] newTitle, newColor in
-            let verticalTransition = newTitle == "Twee + +"
+            let verticalTransition = newTitle == "Twee + +" || newTitle == "Twee + + +"
             var color = newColor
             if verticalTransition {
                 color = .systemPink 

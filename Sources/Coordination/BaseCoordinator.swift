@@ -31,7 +31,6 @@ private class BarButtonItem: UIBarButtonItem, CloseBarButtonItemable {
         actionHandler?()
     }
 }
-
 open class BaseCoordinator: NSObject, Coordinator, DysprosiumCompatible {
     
     public lazy var cancellables = Set<AnyCancellable>()
@@ -47,7 +46,6 @@ open class BaseCoordinator: NSObject, Coordinator, DysprosiumCompatible {
     // We use AnyObject, because `Coordinator` is not a class, but a protocol
     // And we cannot (and will not) add @objc to the Coordinator protocol
     private(set) var childCoordinators = NSHashTable<AnyObject>(options: .weakMemory)
-    private(set) var animators = NSMapTable<UIViewController, UIViewControllerAnimatedTransitioning>(keyOptions: .weakMemory, valueOptions: .strongMemory)
     
     public var children: [any Coordinator] {
         return childCoordinators.allObjects
@@ -169,8 +167,8 @@ open class BaseCoordinator: NSObject, Coordinator, DysprosiumCompatible {
                 navigationController.setViewControllers([ viewController ], animated: transition.animated)
             }
         case .custom(let value):
-            animators.setObject(value, forKey: viewController)
-            navigationController.delegate = self
+            navigationController.delegate = navigationController.customTransitionManager
+            navigationController.customTransitionManager.add(value, viewController: viewController)
             navigationController.pushViewController(viewController, animated: transition.animated)
         case .none:
             break
@@ -179,25 +177,5 @@ open class BaseCoordinator: NSObject, Coordinator, DysprosiumCompatible {
     
     deinit {
         deallocated()
-    }
-}
-
-extension BaseCoordinator: UINavigationControllerDelegate {
-    public func navigationController(
-        _ navigationController: UINavigationController,
-        animationControllerFor operation: UINavigationController.Operation,
-        from fromVC: UIViewController,
-        to toVC: UIViewController
-    ) -> UIViewControllerAnimatedTransitioning? {
-        if operation == .push, var animator = animators.object(forKey: toVC) as? UIViewControllerAnimatedTransitioning & CustomTransitionAnimator {
-            animator.isPushing = true
-            return animator
-            
-        } else if operation == .pop, var animator = animators.object(forKey: fromVC) as? UIViewControllerAnimatedTransitioning & CustomTransitionAnimator {
-            animator.isPushing = false
-            return animator
-        }
-        
-        return nil
     }
 }
