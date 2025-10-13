@@ -28,11 +28,11 @@ let package = Package(
         .library(name: "IlluminateBackgroundProcess", targets: ["IlluminateBackgroundProcess"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/e-sites/Dysprosium.git", .upToNextMajor(from: "6.1.0")),
+        .package(url: "https://github.com/unlockagency/Dysprosium.git", .upToNextMajor(from: "6.1.0")),
         .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "10.0.0")),
         .package(url: "https://github.com/siteline/SwiftUI-Introspect.git", .upToNextMajor(from: "0.1.3")),
         .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.4.4")),
-        .package(url: "https://github.com/e-sites/Einsteinium.git", .upToNextMajor(from: "1.3.0")),
+        .package(url: "https://github.com/unlockagency/Einsteinium.git", .upToNextMajor(from: "1.3.0")),
         .package(url: "https://github.com/Swinject/Swinject.git", .upToNextMajor(from: "2.8.2")),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", .upToNextMajor(from: "4.2.2")),
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.0.0")),

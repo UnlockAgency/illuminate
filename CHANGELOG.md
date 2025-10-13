@@ -1,5 +1,8 @@
 # Illuminate changelog
 
+## v0.10.11
+- Unlock Agency
+
 ## v0.10.10
 - [Coordination] Custom vertical transition fix for stacked custom transitions
 

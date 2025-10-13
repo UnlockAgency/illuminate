@@ -2,7 +2,7 @@
 //  GridView.swift
 //
 //  Created by Bas van Kuijck on 21/09/2022.
-//  Copyright © 2022 E-sites. All rights reserved.
+//  Copyright © 2022 Unlock Agency. All rights reserved.
 //
 
 import Foundation

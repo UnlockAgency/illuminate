@@ -1,4 +1,5 @@
 {
+  "originHash" : "b9489b47b8a63dcf194ef1f05ad26e6f5e787661a798244c0a2156dacdb431cb",
   "pins" : [
     {
       "identity" : "abseil-cpp-swiftpm",
@@ -39,7 +40,7 @@
     {
       "identity" : "dysprosium",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/e-sites/Dysprosium.git",
+      "location" : "https://github.com/unlockagency/Dysprosium.git",
       "state" : {
         "revision" : "f924ff3e0c5c3b5c6577916216155156bb7a950e",
         "version" : "6.1.0"
@@ -48,7 +49,7 @@
     {
       "identity" : "einsteinium",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/e-sites/Einsteinium.git",
+      "location" : "https://github.com/unlockagency/Einsteinium.git",
       "state" : {
         "revision" : "6fb4530339a8bdaf71614237d488d94ad732de90",
         "version" : "1.3.0"
@@ -199,5 +200,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
