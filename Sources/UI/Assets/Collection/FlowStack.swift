@@ -12,18 +12,21 @@ import SwiftUI
 public struct FlowStack<Item, ItemView: View>: View {
     private let items: [Item]
     private let spacing: CGFloat
+    private let alignment: Alignment
     @ViewBuilder private let factory: (Item) -> ItemView
     
     @State private var totalHeight: CGFloat
     
     public init(
         items: [Item],
+        alignment: Alignment = .topLeading,
         spacing: CGFloat = 12,
         @ViewBuilder factory: @escaping (Item) -> ItemView
     ) {
         self.items = items
         self.spacing = spacing
         self.factory = factory
+        self.alignment = alignment
         totalHeight = 0
     }
     
@@ -37,6 +40,31 @@ public struct FlowStack<Item, ItemView: View>: View {
         .padding([.bottom, .trailing], -spacing)
     }
     
+    private var verticalAlignment: VerticalAlignment {
+        var value: VerticalAlignment = .top
+        
+        if alignment == .leading || alignment == .trailing || alignment == .center {
+            value = .center
+        } else if alignment == .bottom || alignment == .bottomLeading || alignment == .bottomLeading {
+            value = .bottom
+        }
+        
+        return value
+    }
+    
+    private var horizontalAlignment: HorizontalAlignment {
+        var value: HorizontalAlignment = .center
+        
+        if alignment == .topLeading || alignment == .topTrailing || alignment == .top {
+            value = .leading
+        } else if alignment == .topTrailing || alignment == .trailing || alignment == .bottomTrailing {
+            value = .trailing
+        }
+        
+        return value
+    }
+    
+    @MainActor
     @ViewBuilder
     private func content(in proxy: GeometryProxy) -> some View {
         var width = CGFloat.zero
@@ -44,11 +72,11 @@ public struct FlowStack<Item, ItemView: View>: View {
         var lastHeight = CGFloat.zero
         let itemCount = items.count
         
-        ZStack(alignment: .topLeading) {
+        ZStack(alignment: alignment) {
             ForEach(Array(items.enumerated()), id: \.offset) { index, item in
                 factory(item)
-                    .padding([.trailing, .bottom], spacing)
-                    .alignmentGuide(.leading) { viewDimension in
+                    .padding([horizontalAlignment == .trailing ? .leading : .trailing, verticalAlignment == .bottom ? .top : .bottom], spacing)
+                    .alignmentGuide(horizontalAlignment) { viewDimension in
                         if abs(width - viewDimension.width) > proxy.size.width {
                             width = 0
                             height -= lastHeight
@@ -62,7 +90,7 @@ public struct FlowStack<Item, ItemView: View>: View {
                         }
                         return result
                     }
-                    .alignmentGuide(.top) { _ in
+                    .alignmentGuide(verticalAlignment) { _ in
                         let result = height
                         if index == itemCount - 1 {
                             height = 0

@@ -1,5 +1,8 @@
 # Illuminate changelog
 
+## v0.10.12
+- [UI] FlowStack alignment
+
 ## v0.10.11
 - Unlock Agency
 
