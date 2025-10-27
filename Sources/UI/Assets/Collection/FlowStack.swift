@@ -55,7 +55,7 @@ public struct FlowStack<Item, ItemView: View>: View {
     private var horizontalAlignment: HorizontalAlignment {
         var value: HorizontalAlignment = .center
         
-        if alignment == .topLeading || alignment == .topTrailing || alignment == .top {
+        if alignment == .topLeading || alignment == .leading || alignment == .bottomLeading {
             value = .leading
         } else if alignment == .topTrailing || alignment == .trailing || alignment == .bottomTrailing {
             value = .trailing
