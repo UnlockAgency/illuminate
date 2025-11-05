@@ -45,7 +45,7 @@ public struct FlowStack<Item, ItemView: View>: View {
         
         if alignment == .leading || alignment == .trailing || alignment == .center {
             value = .center
-        } else if alignment == .bottom || alignment == .bottomLeading || alignment == .bottomLeading {
+        } else if alignment == .bottom || alignment == .bottomLeading || alignment == .bottomTrailing {
             value = .bottom
         }
         

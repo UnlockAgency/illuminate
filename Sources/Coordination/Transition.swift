@@ -40,10 +40,12 @@ public enum TranstionType: Sendable {
 public struct PresentSettings: Sendable {
     public let inNewNavigationController: Bool
     public let fullScreen: Bool
+    public let addCloseButton: Bool
 
-    public init(inNewNavigationController: Bool = true, fullScreen: Bool = false) {
+    public init(inNewNavigationController: Bool = true, fullScreen: Bool = false, addCloseButton: Bool = true) {
         self.inNewNavigationController = inNewNavigationController
         self.fullScreen = fullScreen
+        self.addCloseButton = addCloseButton
     }
 }
 

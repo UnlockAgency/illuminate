@@ -145,13 +145,15 @@ open class BaseCoordinator: NSObject, Coordinator, DysprosiumCompatible {
             navigationController.present(newNavigationController, animated: animated)
             navigationController = newNavigationController
             
-            var item = Self.closeButtonBarItemBulder()
-            item.actionHandler = { [weak newNavigationController] in
-                newNavigationController?.dismiss(animated: animated)
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) { [weak viewController] in
-                viewController?.navigationItem.rightBarButtonItem = item
+            if settings.addCloseButton {
+                var item = Self.closeButtonBarItemBulder()
+                item.actionHandler = { [weak newNavigationController] in
+                    newNavigationController?.dismiss(animated: animated)
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) { [weak viewController] in
+                    viewController?.navigationItem.rightBarButtonItem = item
+                }
             }
         case .push:
             navigationController.pushViewController(viewController, animated: transition.animated)

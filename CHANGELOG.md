@@ -1,5 +1,8 @@
 # Illuminate changelog
 
+## v0.10.14
+- [Coordination] addCloseButton present Settings
+
 ## v0.10.13
 - [UI] FlowStack alignment
 
