@@ -14,5 +14,7 @@ public protocol KeychainsService {
 public protocol KeychainService {
     func set(_ data: Data, key: String) throws
     func getData(_ key: String) throws -> Data?
+    func set<T: Codable>(_ value: T, key: String) throws
+    func getData<T: Codable>(_ key: String, ofType type: T.Type) throws -> T?
     func remove(_ key: String) throws
 }

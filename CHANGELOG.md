@@ -1,5 +1,8 @@
 # Illuminate changelog
 
+## v0.10.15
+- [Keychain] Codable
+
 ## v0.10.14
 - [Coordination] addCloseButton present Settings
 

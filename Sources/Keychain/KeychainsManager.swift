@@ -20,6 +20,20 @@ extension Keychain: KeychainService {
     public func remove(_ key: String) throws {
         try remove(key, ignoringAttributeSynchronizable: true)
     }
+    
+    public func set<T: Codable>(_ value: T, key: String) throws {
+        let data = try JSONEncoder().encode(value)
+        try set(data, key: key)
+    }
+    
+    public func getData<T: Codable>(_ key: String, ofType type: T.Type) throws -> T? {
+        guard let data = try getData(key) else {
+            return nil
+        }
+        
+        let decoder = JSONDecoder()
+        return try decoder.decode(T.self, from: data)
+    }
 }
 
 public class KeychainsManager: KeychainsService {
