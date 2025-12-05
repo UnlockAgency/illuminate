@@ -34,6 +34,10 @@ open class DebugPanelLogHandler: LogHandler, @unchecked Sendable {
         function: String,
         line: UInt
     ) {
+        objc_sync_enter(self)
+        defer {
+            objc_sync_exit(self)
+        }
         let metadataString = prettify(metadata ?? [:])
         var levelString = level.rawValue.uppercased()
         if levelString.count > 3 {
@@ -41,10 +45,10 @@ open class DebugPanelLogHandler: LogHandler, @unchecked Sendable {
         }
         let line = "\(Date()) \(levelString) 𝌀 \(message.description)\(metadataString == nil ? "" : " \(metadataString!)")"
         
-        if DebugPanelLogHandler.logLines.count > 1000 {
-            _ = DebugPanelLogHandler.logLines.removeFirst()
+        if Self.logLines.count > 1000 {
+            _ = Self.logLines.removeFirst()
         }
-        DebugPanelLogHandler.logLines.append(line)
+        Self.logLines.append(line)
     }
     
     public subscript(metadataKey metadataKey: String) -> Logger.Metadata.Value? {
