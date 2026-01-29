@@ -1,5 +1,8 @@
 # Illuminate changelog
 
+## v0.10.16
+- [Foundation] Removed Einsteinium
+
 ## v0.10.15
 - [Keychain] Codable
 

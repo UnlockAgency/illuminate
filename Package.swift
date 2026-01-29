@@ -32,7 +32,6 @@ let package = Package(
         .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "10.0.0")),
         .package(url: "https://github.com/siteline/SwiftUI-Introspect.git", .upToNextMajor(from: "0.1.3")),
         .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.4.4")),
-        .package(url: "https://github.com/unlockagency/Einsteinium.git", .upToNextMajor(from: "1.3.0")),
         .package(url: "https://github.com/Swinject/Swinject.git", .upToNextMajor(from: "2.8.2")),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", .upToNextMajor(from: "4.2.2")),
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.0.0")),
@@ -42,7 +41,7 @@ let package = Package(
         .target(name: "IlluminateCache", dependencies: [], path: "Sources/Cache"),
         .target(name: "IlluminateCodable", dependencies: [], path: "Sources/Codable"),
         .target(name: "IlluminateCoordination", dependencies: [ "Dysprosium" ], path: "Sources/Coordination"),
-        .target(name: "IlluminateFoundation", dependencies: [ "Einsteinium" ], path: "Sources/Foundation"),
+        .target(name: "IlluminateFoundation", dependencies: [], path: "Sources/Foundation"),
         .target(name: "IlluminateRouting", dependencies: [], path: "Sources/Routing"),
         .target(name: "IlluminateSecurity", dependencies: [], path: "Sources/Security"),
         
