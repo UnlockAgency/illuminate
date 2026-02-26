@@ -21,6 +21,9 @@ public struct Transition: Sendable {
 public enum TranstionType: Sendable {
     // Simply push in the current Navigation Controller
     case push
+    
+    // Pushes a new view and pops the previous view
+    case pushAndPopPrevious
 
     // Resets the Navigation Controller's view stack => `viewControllers = [ viewController ]`
     // Backwards will make the viewcontroller's navigationstack pop
