@@ -1,7 +1,10 @@
 # Illuminate changelog
 
+## v0.10.19
+- [Coordinator] Pop coordinator
+
 ## v0.10.18
-- [Coordinator] Push and pop
+- [Coordinator] Push and pop transition
 
 ## v0.10.16
 - [Foundation] Removed Einsteinium

@@ -94,6 +94,11 @@ public extension Coordinator {
     func start(coordinator: Coordinator) {
         start(coordinator: coordinator, transition: .init())
     }
+    
+    @MainActor
+    func pop(animated: Bool = true) {
+        navigationController.popViewController(animated: animated)
+    }
 }
 
 public extension AnyPublisher where Output == Void, Failure == Never {
