@@ -160,7 +160,10 @@ open class BaseCoordinator: NSObject, Coordinator, DysprosiumCompatible {
             
         case .replace:
             var viewControllers = navigationController.viewControllers
-            viewControllers.removeLast()
+            if !viewControllers.isEmpty {
+                parentCoordinator = parentCoordinator?.parentCoordinator ?? rootCoordinator
+                viewControllers.removeLast()
+            }
             viewControllers.append(viewController)
             navigationController.setViewControllers(viewControllers, animated: transition.animated)
             
