@@ -158,16 +158,11 @@ open class BaseCoordinator: NSObject, Coordinator, DysprosiumCompatible {
         case .push:
             navigationController.pushViewController(viewController, animated: transition.animated)
             
-        case .pushAndPopPrevious:
-            navigationController.pushViewController(viewController, animated: transition.animated)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) { [navigationController] in
-                var viewControllers = navigationController.viewControllers
-                if viewControllers.count > 1 {
-                    viewControllers.remove(at: viewControllers.count - 2)
-                    navigationController.setViewControllers(viewControllers, animated: false)
-                }
-            }
+        case .replace:
+            var viewControllers = navigationController.viewControllers
+            viewControllers.removeLast()
+            viewControllers.append(viewController)
+            navigationController.setViewControllers(viewControllers, animated: transition.animated)
             
         case .reset(let backwards):
             // Reset the parentCoordinator, since we're breaking up the navigation stack
