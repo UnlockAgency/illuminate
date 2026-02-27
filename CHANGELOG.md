@@ -1,5 +1,8 @@
 # Illuminate changelog
 
+## v0.10.20
+- [Coordinator] Remove pop coordinator
+
 ## v0.10.19
 - [Coordinator] Pop coordinator
 
