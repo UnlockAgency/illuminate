@@ -8,16 +8,16 @@
 import UIKit
 import Foundation
 
-enum StartingDirection {
-    case top
-    case bottom
+enum TransitionDirection {
+    case topDown
+    case bottomUp
 }
 
 open class VerticalCustomPushAnimator: NSObject, UIViewControllerAnimatedTransitioning, CustomTransitionAnimator {
-    private let startingDirection: StartingDirection
+    private let transitionDirection: TransitionDirection
     
-    init(startingDirection: StartingDirection = .bottom) {
-        self.startingDirection = startingDirection
+    init(transitionDirection: TransitionDirection = .bottomUp) {
+        self.transitionDirection = transitionDirection
     }
     
     private lazy var overlayView: UIView = {
@@ -37,7 +37,7 @@ open class VerticalCustomPushAnimator: NSObject, UIViewControllerAnimatedTransit
             
             let finalFrame = transitionContext.finalFrame(for: toVC)
             var startFrame = finalFrame
-            startFrame.origin.y = if startingDirection == .bottom {
+            startFrame.origin.y = if transitionDirection == .bottomUp {
                 containerView.bounds.height // start below screen
             } else {
                 -containerView.bounds.height // start above screen
@@ -77,7 +77,7 @@ open class VerticalCustomPushAnimator: NSObject, UIViewControllerAnimatedTransit
             
             let initialFrame = transitionContext.initialFrame(for: fromVC)
             var finalFrame = initialFrame
-            finalFrame.origin.y = if startingDirection == .bottom {
+            finalFrame.origin.y = if transitionDirection == .bottomUp {
                 containerView.bounds.height // stop below screen
             } else {
                 -containerView.bounds.height // start above screen
