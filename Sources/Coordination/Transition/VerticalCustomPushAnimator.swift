@@ -80,7 +80,7 @@ open class VerticalCustomPushAnimator: NSObject, UIViewControllerAnimatedTransit
             finalFrame.origin.y = if transitionDirection == .bottomUp {
                 containerView.bounds.height // stop below screen
             } else {
-                -containerView.bounds.height // start above screen
+                -containerView.bounds.height // stop above screen
             }
             
             overlayView.frame = toVC.view.bounds
