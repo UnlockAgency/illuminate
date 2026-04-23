@@ -1,5 +1,8 @@
 # Illuminate changelog
 
+## v0.10.23
+- [VerticalCustomPushAnimator] Support for topdown animation
+
 ## v0.10.22
 - [Coordinator] Replace
 
