@@ -1,5 +1,8 @@
 # Illuminate changelog
 
+## v0.10.24
+- [VerticalCustomPushAnimator] Fixed visibility
+
 ## v0.10.23
 - [VerticalCustomPushAnimator] Support for topdown animation
 
