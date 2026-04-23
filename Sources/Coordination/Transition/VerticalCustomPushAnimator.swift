@@ -8,7 +8,7 @@
 import UIKit
 import Foundation
 
-enum TransitionDirection {
+public enum TransitionDirection {
     case topDown
     case bottomUp
 }
@@ -16,7 +16,7 @@ enum TransitionDirection {
 open class VerticalCustomPushAnimator: NSObject, UIViewControllerAnimatedTransitioning, CustomTransitionAnimator {
     private let transitionDirection: TransitionDirection
     
-    init(transitionDirection: TransitionDirection = .bottomUp) {
+    public init(transitionDirection: TransitionDirection = .bottomUp) {
         self.transitionDirection = transitionDirection
     }
     
